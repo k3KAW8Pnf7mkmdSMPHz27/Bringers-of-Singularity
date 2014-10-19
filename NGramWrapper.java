@@ -26,12 +26,12 @@ public class NGramWrapper {
     long numberOfSentences = 0;
     long numberOfTokens = 0;
 
-    private NGramModel ngram = new NGramModel();
+    NGramModel ngram = new NGramModel();
 
     public static void main(String[] args) {
         File searchIn = new File("corpus.txt");
         nGramLength=3;
-        NGramWrapper ngram = new NGramWrapper();
+        NGramWrapper ngram = new NGramWrapper(nGramLength);
         for(int i = 0; i < args.length; i+=2) {
             if(args[i].equals("n-gram")) {
                 nGramLength = Integer.parseInt(args[i+1]);
@@ -49,16 +49,23 @@ public class NGramWrapper {
     }
 
 
-    public NGramWrapper() {
-
+    public NGramWrapper(int nGramLength) {
+        NGramWrapper.nGramLength = nGramLength;
     }
 
+    public boolean exists(String[] s) {
+        return ngram.contains(new StringList(s));
+    }
+
+    public int counts(String[] s) {
+        return ngram.getCount(new StringList(s));
+    }
 
     public NGramModel getNgram() {
         return ngram;
     }
 
-    private void readFile(File f) {
+    public void readFile(File f) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(f));
             String newLine = br.readLine();
