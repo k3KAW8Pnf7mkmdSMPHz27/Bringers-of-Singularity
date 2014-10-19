@@ -43,7 +43,7 @@ public class HyperStringFSA {
 	private void generateOutputs(Node node, Vector<String> outputs) {
 		if (node.children.size() == 0) {
 			String s = backTrack(node, "");
-			System.out.println(s);
+			//System.out.println(s);
 			outputs.add(s);
 		} else {
 			for (int i = 0; i < node.children.size(); i++) {
