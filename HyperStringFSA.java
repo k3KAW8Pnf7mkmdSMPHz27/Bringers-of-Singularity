@@ -8,7 +8,7 @@ import java.util.Vector;
  *
  */
 public class HyperStringFSA {
-	public static final String[] TRANSITIONS = { " E ", " ,COMMA ", " .PERIOD ",
+    public static final String[] TRANSITIONS = { " E ", " ,COMMA ", " .PERIOD ",
 			" ?QMARK " };
 	public static final int TRANSITION_COUNT = 4;
 	public static final int STATES_COUNT = 2;
