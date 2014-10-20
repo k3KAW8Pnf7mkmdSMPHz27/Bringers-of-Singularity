@@ -6,16 +6,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
+ * This class loads the file corpus.txt, reads it line by line.
+ * Each line is processed according to a set of rules, and the resuls
+ * are written to ppCorpus.txt, line by line.
  * 
- */
-
-/**
  * @author Jasmin Suljkic
- *
  */
 public class CorpusPreprocess {
 
 	/**
+	 * No arguments are taken in account. 
+	 * Statically configured file corpus.txt is read and ppCorpus.txt is created and written to.
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -28,8 +29,11 @@ public class CorpusPreprocess {
 			bw = new BufferedWriter(new FileWriter("ppCorpus.txt"));
 			String line;
 			char[] lc;
+			
+			//Read a line from file (as long as there are lines in the file)
+			//Process the line
+			//Write the result to output file.
 			while ((line=br.readLine()) != null) {
-			   // process the line.
 				lc = line.toCharArray();
 				for(char c : lc){
 					if(c=='.'){
@@ -60,10 +64,8 @@ public class CorpusPreprocess {
 			br.close();
 			bw.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

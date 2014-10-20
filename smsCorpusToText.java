@@ -5,6 +5,12 @@ import java.io.InputStreamReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 
+/**
+ * This class opens a file by a statically set filename in the current working directory.
+ * One line at a time it extracts the text from the file and saves it to corpus.txt
+ * @author Jasmin Suljkic
+ * @author Jonatan Asketorp
+ */
 public class smsCorpusToText {
     public static void main(String[] args) {
         try {
