@@ -1,10 +1,21 @@
+import java.io.*;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.lang.String;
-import java.io.File;
 import java.lang.StringBuilder;
 import java.util.Arrays;
+import java.util.Iterator;
+import opennlp.tools.util.StringList;
+import opennlp.tools.ngram.NGramModel;
+
+
 
 public class asketTest {
     public static void main(String[] args) {
@@ -24,7 +35,7 @@ public class asketTest {
         String[] output = new String[input.length*input.length*numberOfTransitions];
         int counter = 0;
         int internalCounters[] = new int[input.length];
-        Arrays.fill(internalCounters, (transitions.length-1));
+        Arrays.fill(internalCounters, (transitions.length - 1));
         while (internalCounters[0]>=0) {
             StringBuilder sb = new StringBuilder();
             for(int i = 0; i < input.length; i++) {
@@ -55,6 +66,7 @@ public class asketTest {
         System.err.println("Number of sentences: "+ngw.numberOfSentences);
         System.err.println("Number of tokens: "+ngw.numberOfTokens);
         System.err.println("Number of grams: "+ngw.getNgram().numberOfGrams());
+        //ngw.serialize((OutputStream)(new FileOutputStream("test.txt")));
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             String input = br.readLine();
@@ -71,7 +83,7 @@ public class asketTest {
                     System.err.println(s);
                 }
                 */
-                String[] extraOut = tempFSA(FSAInput);
+                String[] extraOut = tempFSA(input.split(" "));
                 boolean found = true;
                 for(String s: extraOut) {
                     if(ngw.exists(s.split(" "))) {
@@ -100,15 +112,19 @@ public class asketTest {
         }
         return output;
     }
-    private void addNGrams(String string, int length) {
-        String input[] = string.split(" ");
-        numberOfTokens += input.length;
-        for(int i = 0; i < input.length-length+1; i++) {
-            String[] ngram = new String[length];
-            for(int j = 0; j < length; j++) {
-                ngram[j] = input[i+j];
-            }
-            this.ngram.add(new StringList(ngram));
+
+    private static void workAroundToSaveNGramModel(OutputStream out, NGramModel ngm) {
+        PrintWriter pw = new PrintWriter(out);
+
+        Iterator<StringList> iterator = ngm.iterator();
+        while (iterator.hasNext()) {
+            StringList sl = iterator.next();
+            int count = ngm.getCount(sl);
+            pw.print(sl.toString());
+            pw.print(' ');
+            pw.print(count);
+            pw.println();
         }
+        pw.flush();
     }
 }
