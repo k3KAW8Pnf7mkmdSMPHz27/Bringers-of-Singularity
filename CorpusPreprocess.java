@@ -26,7 +26,7 @@ public class CorpusPreprocess {
 		try {
 			br = new BufferedReader(new FileReader("corpus.txt"));
 			bw = new BufferedWriter(new FileWriter("ppCorpus.txt"));
-			String line = br.readLine();
+			String line;
 			char[] lc;
 			while ((line=br.readLine()) != null) {
 			   // process the line.
