@@ -8,7 +8,7 @@ import java.util.Vector;
  *
  */
 public class HyperStringFSA {
-	public static final String[] TRANSITIONS = { " E ", " ,COMMA ", " .PERIOD ",
+    public static final String[] TRANSITIONS = { " E ", " ,COMMA ", " .PERIOD ",
 			" ?QMARK " };
 	public static final int TRANSITION_COUNT = 4;
 	public static final int STATES_COUNT = 2;
@@ -43,7 +43,7 @@ public class HyperStringFSA {
 	private void generateOutputs(Node node, Vector<String> outputs) {
 		if (node.children.size() == 0) {
 			String s = backTrack(node, "");
-			System.out.println(s);
+			//System.out.println(s);
 			outputs.add(s);
 		} else {
 			for (int i = 0; i < node.children.size(); i++) {
