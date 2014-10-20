@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ public class Read {
   List<Sentence> sentences = new ArrayList<Sentence>();
   Sentence       sentence;
 
-  public List<Sentence> Read(String filename) {
+  public List<Sentence> ReadWriteCorpus(String filename) {
 
 
     try(BufferedReader br = new BufferedReader(new FileReader(filename))) {
@@ -51,8 +52,34 @@ public class Read {
     }
     return sentences;
   }
+/*  LABEL11 LABEL12 ... LABEL1k ---- feature11 feature12 ...
+  LABEL21 LABEL22 ... LABEL2k ---- feature21 feature22 ...
+  LABEL32 LABEL32 ... LABEL3k ---- feature31 feature32 ...*/
+  public void WriteGRMM(List<Sentence> sentences, String filename) {
+    try {
+      FileWriter writer = new FileWriter(filename);
+      for (Sentence sentence: sentences) {
+        writer.write(sentence.getClassifier() + " ---- " + sentence.toString() + "\n");
+      }
+      writer.flush();
+      writer.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } 
+  }
   
-  public void Write(List<Sentence> sentences) {
+  public void WriteSentences(List<Sentence> sentences, String filename) {
+    try {
+      FileWriter writer = new FileWriter(filename);
+      for (Sentence sentence: sentences) {
+        writer.write(sentence.toString() + "\n");
+      }
+      writer.flush();
+      writer.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } 
     
   }
+  
 }

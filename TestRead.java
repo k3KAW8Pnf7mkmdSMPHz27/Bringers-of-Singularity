@@ -6,10 +6,9 @@ public class TestRead {
     //final StaXParser read = new StaXParser();
     final Read read = new Read();
     //final List<Sentence> readConfig = read.readConfig("config.xml");
-    final List<Sentence> readConfig = read.Read("testread");
-    for (final Sentence item : readConfig) {
-      System.out.println(item);
-      System.out.println(item.getClassifier());
-    }
+    final List<Sentence> sentences = read.ReadWriteCorpus("testread");
+
+    read.WriteGRMM(sentences, "testwrite");
+    read.WriteSentences(sentences, "testwritesentence");
   }
 }
