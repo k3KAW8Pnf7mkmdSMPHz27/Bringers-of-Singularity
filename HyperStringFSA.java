@@ -117,6 +117,9 @@ public class HyperStringFSA {
 		String[] words = {"mars", "scientists"};
 		HyperStringFSA fsa = new HyperStringFSA(words);
 		System.out.println(fsa);
+        for(String s:fsa.outputs) {
+            System.out.println(s);
+        }
 	}
 
 	private class Node {
