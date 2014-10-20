@@ -8,19 +8,19 @@ import java.util.Vector;
  *
  */
 public class HyperStringFSA {
-    public static final String[] TRANSITIONS = { " E ", " ,COMMA ", " .PERIOD ",
-			" ?QMARK " };
+    public static final String[] TRANSITIONS = { " E ", " , ", " . ",
+			" ? " };
 	public static final int TRANSITION_COUNT = 4;
 	public static final int STATES_COUNT = 2;
 
-	Vector<String> outputs;
+	Vector<String[]> outputs;
 
 	/**
 	 * Constructor creating a FSA based on the specified String array consisting of words
 	 * @param s Array of words
 	 */
 	public HyperStringFSA(String[] s) {
-		outputs = new Vector<String>();
+		outputs = new Vector<String[]>();
 		constructFSA(s, outputs);
 	}
 
@@ -29,7 +29,7 @@ public class HyperStringFSA {
 	 * @param s Array of words
 	 * @param outputs Vector holding all possible outputs
 	 */
-	private void constructFSA(String[] s, Vector<String> outputs) {
+	private void constructFSA(String[] s, Vector<String[]> outputs) {
 		Node root = new Node("");
 		root = generateNodes(s, root);
 		generateOutputs(root, outputs);
@@ -40,11 +40,16 @@ public class HyperStringFSA {
 	 * @param node
 	 * @param outputs
 	 */
-	private void generateOutputs(Node node, Vector<String> outputs) {
+	private void generateOutputs(Node node, Vector<String[]> outputs) {
 		if (node.children.size() == 0) {
 			String s = backTrack(node, "");
 			//System.out.println(s);
-			outputs.add(s);
+			String[] a = s.split(" ");
+			for (int i = 0; i < a.length; i++) {
+				a[i] = a[i].replace("E", " ");
+			}
+			outputs.add(a);
+			
 		} else {
 			for (int i = 0; i < node.children.size(); i++) {
 				generateOutputs(node.children.elementAt(i), outputs);
@@ -117,8 +122,8 @@ public class HyperStringFSA {
 		String[] words = {"mars", "scientists"};
 		HyperStringFSA fsa = new HyperStringFSA(words);
 		System.out.println(fsa);
-        for(String s:fsa.outputs) {
-            System.out.println(s);
+        for(String[] s:fsa.outputs) {
+            System.out.println(Arrays.toString(s));
         }
 	}
 
