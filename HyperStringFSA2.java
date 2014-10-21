@@ -8,9 +8,9 @@ import java.util.Vector;
  *
  */
 public class HyperStringFSA2 {
-	public static final String[] TRANSITIONS = { " ", " ,COMMA ", " .PERIOD ", " ?QMARK " };
-	public static final String[] POSTPROCESSES = {" ", ", ", ". ", "? "};
-	public static final int TRANSITION_COUNT = 3;
+	public static final String[] TRANSITIONS = { " ", " ,COMMA ", " .PERIOD ", " ?QMARK "," !EXCL " };
+	public static final String[] POSTPROCESSES = {" ", ", ", ". ", "? ", "! "};
+	public static final int TRANSITION_COUNT = 5;
 	public static final int STATES_COUNT = 2;
 
 	Vector<String[]> outputs;
