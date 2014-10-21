@@ -11,3 +11,6 @@ DD2380 project at KTH
 | ? | ?QMARK |
 | ! | !EXCL |
 | SPACE | none |
+
+## Inherent assumptions
+- A word can only be terminated by (char)' ' and (char)'\n'.
