@@ -41,20 +41,35 @@ public class PunctuationPredicter {
 	 *            - string from where the prediction is to be made
 	 * @return the predicted sentence
 	 */
-	public String predictPunctuation(String[] input) {
+	public String predictPunctuation(String input) {
 		System.err
 				.println("-----------------------PREDICTION---------------------------");
-		HyperStringFSA2 hypString = new HyperStringFSA2(input);
+		
+		// Split into words
+		String[] words = input.split(" ");
+		
+		// Generate all possible punctuation combinations
+		HyperStringFSA2 hypString = new HyperStringFSA2(words);
 
+		// For each combination check it's frequency
 		String prediction = "";
+		int maxCount = 0;
 		for (String[] s : hypString.getOutputs()) {
 			//System.err.println(Arrays.toString(s));
 			if (nGramWrapper.exists(s)) {
+				int count = nGramWrapper.counts(s);
 				System.err.println("Possible string: " + Arrays.toString(s));
-				System.err.println("Counts = " + nGramWrapper.counts(s));
-				for (String w : s) {
-					prediction += w + " ";
+				System.err.println("Counts = " + count);
+				
+				// If this combination occurs more often, use that as prediction
+				if (count > maxCount) {
+					prediction = "";
+					maxCount = count;
+					for (String w : s) {
+						prediction += w + " ";
+					}
 				}
+				
 				prediction = HyperStringFSA2.postProcessing(prediction);
 			}
 		}
@@ -78,7 +93,7 @@ public class PunctuationPredicter {
 			String input = br.readLine();
 
 			while (input != null) {
-				System.out.println(predictPunctuation(input.split(" ")));
+				System.out.println(predictPunctuation(input));
 				input = br.readLine();
 			}
 		} catch (IOException e) {
