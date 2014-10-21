@@ -2,14 +2,16 @@ import java.util.Arrays;
 import java.util.Vector;
 
 /**
- * @author joakimlilja Hyper String Finite State Automata Object holding all
- *         possible combinations of first letter capitalization and punctuation
- *         symbols .,?
+ * Hyper String Finite State Automata Object holding all possible combinations
+ * of first letter capitalization and punctuation symbols .,?
+ * 
+ * @author joakimlilja
  *
  */
 public class HyperStringFSA2 {
-	public static final String[] TRANSITIONS = { " ", " ,COMMA ", " .PERIOD ", " ?QMARK "," !EXCL " };
-	public static final String[] POSTPROCESSES = {" ", ", ", ". ", "? ", "! "};
+	public static final String[] TRANSITIONS = { " ", " ,COMMA ", " .PERIOD ",
+			" ?QMARK ", " !EXCL " };
+	public static final String[] POSTPROCESSES = { " ", ", ", ". ", "? ", "! " };
 	public static final int TRANSITION_COUNT = 5;
 	public static final int STATES_COUNT = 2;
 
@@ -21,6 +23,7 @@ public class HyperStringFSA2 {
 	 * 
 	 * @param s
 	 *            Array of words
+	 * 
 	 */
 	public HyperStringFSA2(String[] s) {
 		outputs = new Vector<String[]>();
@@ -32,8 +35,10 @@ public class HyperStringFSA2 {
 	 * 
 	 * @param s
 	 *            Array of words
+	 * 
 	 * @param outputs
 	 *            Vector holding all possible outputs
+	 * 
 	 */
 	private void constructFSA(String[] s, Vector<String[]> outputs) {
 		Node root = new Node("");
@@ -50,7 +55,7 @@ public class HyperStringFSA2 {
 	private void generateOutputs(Node node, Vector<String[]> outputs) {
 		if (node.children.size() == 0) {
 			String s = backTrack(node, "");
-			// System.out.println(s);
+			//System.out.println(s);
 			outputs.add(s.split(" "));
 
 		} else {
@@ -125,7 +130,7 @@ public class HyperStringFSA2 {
 	private String capitalizeWord(String input) {
 		return input.substring(0, 1).toUpperCase() + input.substring(1);
 	}
-	
+
 	private String deCapitalizeWord(String input) {
 		return input.substring(0, 1).toLowerCase() + input.substring(1);
 	}
@@ -133,11 +138,11 @@ public class HyperStringFSA2 {
 	public String toString() {
 		return outputs.toString();
 	}
-	
+
 	public Vector<String[]> getOutputs() {
 		return outputs;
 	}
-	
+
 	public static String postProcessing(String input) {
 		for (int i = 0; i < TRANSITION_COUNT; i++) {
 			input = input.replaceAll(TRANSITIONS[i], POSTPROCESSES[i]);
