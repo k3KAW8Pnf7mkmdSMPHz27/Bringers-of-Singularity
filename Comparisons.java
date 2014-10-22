@@ -53,13 +53,11 @@ public class Comparisons {
             int originalChar = brOriginal.read();
             int generatedChar = brGenerated.read();
             final int space = ' ';
-            int truePositivePrecision = 0;
-            int positivePrecision = 0;
-            int truePositiveRecall = 0;
-            int positiveRecall = 0;
+            long truePositivePrecision = 0;
+            long positivePrecision = 0;
+            long positiveRecall = 0;
             while(originalChar>=0) {
                 //Check if first char is the punctuation looked for
-                int judge = 0;
                 //If there is a generated punctuation there is either a false positive or a true positive
                 /*
                 Precision ...
@@ -68,15 +66,17 @@ public class Comparisons {
                     positivePrecision++;
                     if(originalChar==punctuation) {
                         truePositivePrecision++;
+                    } else {
+                        skipThisWord(brGenerated);
                     }
+                } else if(originalChar==punctuation) {
+                    positiveRecall++;
+                    skipThisWord(brOriginal);
+                } else {
+                    skipThisWord(brOriginal);
+                    skipThisWord(brGenerated);
                 }
-                /*
-                Recall ...
-                 */
 
-
-                skipThisWord(brOriginal);
-                skipThisWord(brGenerated);
                 originalChar=brOriginal.read();
                 generatedChar=brGenerated.read();
             }
