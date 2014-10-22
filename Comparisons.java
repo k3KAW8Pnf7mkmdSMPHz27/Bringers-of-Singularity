@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Arrays;
 
 public class Comparisons {
 
@@ -29,10 +30,20 @@ public class Comparisons {
         System.err.println("Commas: "+countComma(original));
         System.err.println();
         System.err.println("Additional data:");
+
+        char punctuations[] = {'.',',','?','!'};
+
+        double[] FScore = getFScore(punctuations, generated, original);
+        for(int i = 0; i < punctuations.length; i++) {
+            System.err.println("F-score for "+punctuations[i]+" = "+FScore[i]);
+        }
+        System.err.println("Total f-score is "+FScore[FScore.length-1]);
+        /*
         System.err.println("F-score for question marks: "+getFScore('?', generated, original));
         System.err.println("F-score for exclamation marks: "+getFScore('!', generated, original));
         System.err.println("F-score for periods: "+getFScore('.', generated, original));
         System.err.println("F-score for commas: "+getFScore(',', generated, original));
+        */
     }
 
     /**
@@ -44,8 +55,9 @@ public class Comparisons {
     /**
     Not implemented yet ...
      */
-    private static double getFScore(char[] punctuation, File generated, File original) {
-        double FScore = -1;
+    private static double[] getFScore(char[] punctuation, File generated, File original) {
+        double FScore[] = new double[punctuation.length+1];
+        Arrays.fill(FScore, -1);
         try {
             BufferedReader brGenerated = new BufferedReader(new FileReader(generated));
             BufferedReader brOriginal = new BufferedReader(new FileReader(original));
@@ -58,25 +70,37 @@ public class Comparisons {
             int truePositivePrecision = 0;
             int positivePrecision = 0;
             int positiveRecall = 0;
+            int charTruePositivePrecision[] = new int[punctuation.length];
+            int charPositivePrecision[] = new int[punctuation.length];
+            int charPositiveRecall[] = new int[punctuation.length];
             while(originalChar>=0) {
                 //Check if first char is the punctuation looked for
                 //If there is a generated punctuation there is either a false positive or a true positive
                 /*
                 Precision ...
                  */
-
-                if(generatedChar==punctuation) {
+                //if(generatedChar==punctuation) {
+                int containsGenerated = contains(punctuation, generatedChar);
+                int containsOriginal = contains(punctuation, originalChar);
+                //if(contains(punctuation, generatedChar)) {
+                if(containsGenerated>=0) {
                     positivePrecision++;
-                    if(originalChar==punctuation) {
+                    charPositivePrecision[containsGenerated]++;
+                    if (originalChar == punctuation[containsGenerated]) {
                         truePositivePrecision++;
+                        charTruePositivePrecision[containsGenerated]++;
                         positiveRecall++;
+                        charPositiveRecall[containsGenerated]++;
                         skipThisWord(brOriginal);
                         skipThisWord(brGenerated);
                     } else {
                         skipThisWord(brGenerated);
                     }
-                } else if(originalChar==punctuation) {
+                    //} else if(originalChar==punctuation) {
+                    //} else if(contains(punctuation, originalChar)) {
+                } else if(containsOriginal>=0) {
                     positiveRecall++;
+                    charPositiveRecall[containsOriginal]++;
                     skipThisWord(brOriginal);
                 } else {
                     skipThisWord(brOriginal);
@@ -86,15 +110,27 @@ public class Comparisons {
                 originalChar=brOriginal.read();
                 generatedChar=brGenerated.read();
             }
-            double precision = truePositivePrecision/positivePrecision;
-            double recall = truePositivePrecision/positiveRecall;
-            FScore = (2*precision*recall)/(precision + recall);
+            for(int i = 0; i < punctuation.length; i++) {
+                double precision = (double)charTruePositivePrecision[i]/(double)charPositivePrecision[i];
+                double recall = (double)charTruePositivePrecision[i]/(double)charPositiveRecall[i];
+                FScore[i] = (2*precision*recall)/(precision+recall);
+            }
+            double precision = (double)truePositivePrecision/(double)positivePrecision;
+            double recall = (double)truePositivePrecision/(double)positiveRecall;
+            FScore[FScore.length-1] = (2*precision*recall)/(precision + recall);
         } catch(IOException e) {
             e.printStackTrace();
         }
         return FScore;
     }
-
+    private static int contains(char[] chars, int c) {
+        for(int i = 0; i < chars.length; i++) {
+            if(chars[i]==c) {
+                return i;
+            }
+        }
+        return -1;
+    }
     /**
      * The underlying assumptions is that a word can only be separated by a space(' ') or a newline('\n').
      * @param br
