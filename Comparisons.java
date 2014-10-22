@@ -11,6 +11,7 @@ public class Comparisons {
     public static void main(String[] args) {
         if(args.length!=2) {
             System.err.println("Correct usage is:\njava Comparisons <generated_file> <original_file>");
+            System.exit(1);
         }
         File generated = new File(args[0]);
         File original = new File(args[1]);
@@ -29,9 +30,9 @@ public class Comparisons {
         System.err.println();
         System.err.println("Additional data:");
         System.err.println("F-score for question marks: "+getFScore('?', generated, original));
-        System.err.println("F-score for exclamation marks: "+getFScore('?', generated, original));
-        System.err.println("F-score for periods: "+getFScore('?', generated, original));
-        System.err.println("F-score for commas: "+getFScore('?', generated, original));
+        System.err.println("F-score for exclamation marks: "+getFScore('!', generated, original));
+        System.err.println("F-score for periods: "+getFScore('.', generated, original));
+        System.err.println("F-score for commas: "+getFScore(',', generated, original));
     }
 
     /**
@@ -43,7 +44,8 @@ public class Comparisons {
     /**
     Not implemented yet ...
      */
-    private static double getFScore(char punctuation, File generated, File original) {
+    private static double getFScore(char[] punctuation, File generated, File original) {
+        double FScore = -1;
         try {
             BufferedReader brGenerated = new BufferedReader(new FileReader(generated));
             BufferedReader brOriginal = new BufferedReader(new FileReader(original));
@@ -53,15 +55,16 @@ public class Comparisons {
             int originalChar = brOriginal.read();
             int generatedChar = brGenerated.read();
             final int space = ' ';
-            long truePositivePrecision = 0;
-            long positivePrecision = 0;
-            long positiveRecall = 0;
+            int truePositivePrecision = 0;
+            int positivePrecision = 0;
+            int positiveRecall = 0;
             while(originalChar>=0) {
                 //Check if first char is the punctuation looked for
                 //If there is a generated punctuation there is either a false positive or a true positive
                 /*
                 Precision ...
                  */
+
                 if(generatedChar==punctuation) {
                     positivePrecision++;
                     if(originalChar==punctuation) {
@@ -83,10 +86,13 @@ public class Comparisons {
                 originalChar=brOriginal.read();
                 generatedChar=brGenerated.read();
             }
+            double precision = truePositivePrecision/positivePrecision;
+            double recall = truePositivePrecision/positiveRecall;
+            FScore = (2*precision*recall)/(precision + recall);
         } catch(IOException e) {
             e.printStackTrace();
         }
-        return Double.NaN;
+        return FScore;
     }
 
     /**
