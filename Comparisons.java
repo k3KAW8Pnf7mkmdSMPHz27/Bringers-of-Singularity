@@ -66,6 +66,9 @@ public class Comparisons {
                     positivePrecision++;
                     if(originalChar==punctuation) {
                         truePositivePrecision++;
+                        positiveRecall++;
+                        skipThisWord(brOriginal);
+                        skipThisWord(brGenerated);
                     } else {
                         skipThisWord(brGenerated);
                     }
