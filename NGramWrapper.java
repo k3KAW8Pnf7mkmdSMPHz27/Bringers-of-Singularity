@@ -13,6 +13,7 @@ import java.util.Vector;
 import java.io.File;
 import opennlp.tools.ngram.NGramModel;
 import opennlp.tools.util.StringList;
+import java.util.Iterator;
 
 public class NGramWrapper {
     /*
@@ -43,10 +44,21 @@ public class NGramWrapper {
         }
 
         ngram.readFile(searchIn);
-        System.err.println("Total ngram length = "+ngram.getNgram().numberOfGrams());
+        System.err.println("Total ngram length = "+getNumberOfNGrams(ngram.getNgram()));
         System.err.println("Total sentences = "+ngram.numberOfSentences);
         System.err.println("Total tokens = "+ngram.numberOfTokens);
     }
+
+    public static long getNumberOfNGrams(NGramModel ngm) {
+        Iterator<StringList> it = ngm.iterator();
+        long count = 0;
+        while(it.hasNext()) {
+            it.next();
+            count++;
+        }
+        return count;
+    }
+
 
 
     public NGramWrapper(int nGramLength) {
@@ -69,6 +81,9 @@ public class NGramWrapper {
         try {
             BufferedReader br = new BufferedReader(new FileReader(f));
             String newLine = br.readLine();
+            /*
+            The assumption that one line is a sentence is erreneouos in ukWAC.
+             */
             while(newLine!=null) {
                 addNGrams(newLine, nGramLength);
                 numberOfSentences++;
