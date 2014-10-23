@@ -13,7 +13,6 @@ import java.util.Vector;
 import java.io.File;
 import opennlp.tools.ngram.NGramModel;
 import opennlp.tools.util.StringList;
-import java.util.Iterator;
 
 public class NGramWrapper {
     /*
@@ -23,7 +22,7 @@ public class NGramWrapper {
     private static boolean padEnd = false; //If {be.<e><e><e>} is a correct 3-gram
 
 
-    private static int nGramLength;
+    private int nGramLength;
     long numberOfSentences = 0;
     long numberOfTokens = 0;
 
@@ -31,7 +30,7 @@ public class NGramWrapper {
 
     public static void main(String[] args) {
         File searchIn = new File("corpus.txt");
-        nGramLength=3;
+        int nGramLength=3;
         NGramWrapper ngram = new NGramWrapper(nGramLength);
         for(int i = 0; i < args.length; i+=2) {
             if(args[i].equals("n-gram")) {
@@ -44,25 +43,12 @@ public class NGramWrapper {
         }
 
         ngram.readFile(searchIn);
-        System.err.println("Total ngram length = "+getNumberOfNGrams(ngram.getNgram()));
-        System.err.println("Total lines = "+ngram.numberOfSentences);
-        System.err.println("Total tokens = "+ngram.numberOfTokens);
-    }
 
-    public static long getNumberOfNGrams(NGramModel ngm) {
-        Iterator<StringList> it = ngm.iterator();
-        long count = 0;
-        while(it.hasNext()) {
-            it.next();
-            count++;
-        }
-        return count;
     }
-
 
 
     public NGramWrapper(int nGramLength) {
-        NGramWrapper.nGramLength = nGramLength;
+        this.nGramLength = nGramLength;
     }
 
     public boolean exists(String[] s) {
@@ -76,19 +62,23 @@ public class NGramWrapper {
     public NGramModel getNgram() {
         return ngram;
     }
+    
+    public int getNGramLength() {
+    	return nGramLength;
+    }
 
     public void readFile(File f) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(f));
             String newLine = br.readLine();
-            /*
-            The assumption that one line is a sentence is erreneouos in ukWAC.
-             */
             while(newLine!=null) {
                 addNGrams(newLine, nGramLength);
                 numberOfSentences++;
                 newLine=br.readLine();
             }
+            System.err.println("Total ngram length = "+getNgram().numberOfGrams());
+            System.err.println("Total sentences = "+numberOfSentences);
+            System.err.println("Total tokens = "+numberOfTokens);
         } catch(IOException e) {
             e.printStackTrace();
         }

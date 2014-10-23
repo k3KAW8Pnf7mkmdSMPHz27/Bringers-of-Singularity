@@ -44,33 +44,26 @@ public class PunctuationPredicter {
 	public String predictPunctuation(String input) {
 		System.err
 				.println("-----------------------PREDICTION---------------------------");
-		
+
 		// Split into words
 		String[] words = input.split(" ");
-		
-		// Generate all possible punctuation combinations
-		HyperStringFSA2 hypString = new HyperStringFSA2(words);
 
-		// For each combination check it's frequency
+		// Generate all possible punctuation combinations
+		HyperStringFSA2 hypString = new HyperStringFSA2(words, nGramWrapper);
+
+		// For each combination get it's count (last index)
 		String prediction = "";
-		int maxCount = 0;
+		double maxCount = 0;
 		for (String[] s : hypString.getOutputs()) {
-			//System.err.println(Arrays.toString(s));
-			if (nGramWrapper.exists(s)) {
-				int count = nGramWrapper.counts(s);
-				System.err.println("Possible string: " + Arrays.toString(s));
-				System.err.println("Counts = " + count);
-				
-				// If this combination occurs more often, use that as prediction
-				if (count > maxCount) {
-					prediction = "";
-					maxCount = count;
-					for (String w : s) {
-						prediction += w + " ";
-					}
+			// System.err.println(Arrays.toString(s));
+			double count = Double.parseDouble(s[s.length - 1]);
+			if (count > maxCount) {
+				prediction = "";
+				maxCount = count;
+				for (String w : s) {
+					prediction += w + " ";
+					prediction = HyperStringFSA2.postProcessing(prediction);
 				}
-				
-				prediction = HyperStringFSA2.postProcessing(prediction);
 			}
 		}
 

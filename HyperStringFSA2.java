@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -9,13 +10,14 @@ import java.util.Vector;
  *
  */
 public class HyperStringFSA2 {
-	public static final String[] TRANSITIONS = { " ", " ,COMMA ", " .PERIOD ",
-			" ?QMARK ", " !EXCL " };
-	public static final String[] POSTPROCESSES = { " ", ", ", ". ", "? ", "! " };
-	public static final int TRANSITION_COUNT = 5;
+	public static final String[] TRANSITIONS = {",COMMA ", ".PERIOD ",
+			"\\?QMARK ", "!EXCL " };
+	public static final String[] POSTPROCESSES = {", ", ". ", "? ", "! " };
+	public static final int TRANSITION_COUNT = 4;
 	public static final int STATES_COUNT = 2;
 
 	Vector<String[]> outputs;
+	NGramWrapper nGram;
 
 	/**
 	 * Constructor creating a FSA based on the specified String array consisting
@@ -25,13 +27,15 @@ public class HyperStringFSA2 {
 	 *            Array of words
 	 * 
 	 */
-	public HyperStringFSA2(String[] s) {
+	public HyperStringFSA2(String[] s, NGramWrapper nGram) {
 		outputs = new Vector<String[]>();
+		this.nGram = nGram;
 		constructFSA(s, outputs);
 	}
 
 	/**
-	 * Construct the FSA with all possible outputs
+	 * Construct the FSA with all possible outputs with each emission having a 
+	 * cost (ATM it's just the frequency of occurences in the corpus)
 	 * 
 	 * @param s
 	 *            Array of words
@@ -41,7 +45,7 @@ public class HyperStringFSA2 {
 	 * 
 	 */
 	private void constructFSA(String[] s, Vector<String[]> outputs) {
-		Node root = new Node("");
+		Node root = new Node("", 0d);
 		root = generateNodes(s, root);
 		generateOutputs(root, outputs);
 	}
@@ -54,8 +58,8 @@ public class HyperStringFSA2 {
 	 */
 	private void generateOutputs(Node node, Vector<String[]> outputs) {
 		if (node.children.size() == 0) {
-			String s = backTrack(node, "");
-			//System.out.println(s);
+			String s = backTrack(node, "", 100) + node.cost;
+			// System.out.println(s);
 			outputs.add(s.split(" "));
 
 		} else {
@@ -72,11 +76,11 @@ public class HyperStringFSA2 {
 	 * @param s
 	 * @return output
 	 */
-	private String backTrack(Node node, String s) {
-		if (node.parent == null) {
-			return node.value + s.substring(0, s.length() - 1);
+	private String backTrack(Node node, String s, int n) {
+		if (node.parent == null || n == 0) {
+			return node.value + s;
 		} else {
-			return backTrack(node.parent, node.value + s);
+			return backTrack(node.parent, node.value + s, n - 1);
 		}
 
 	}
@@ -89,16 +93,21 @@ public class HyperStringFSA2 {
 	 * @return
 	 */
 	private Node generateNodes(String[] s, Node parent) {
-		Node unCapNode = new Node(deCapitalizeWord(s[0]));
+		String unCapWord = deCapitalizeWord(s[0]);
+		Node unCapNode = new Node(unCapWord + " ", parent.cost
+				+ getCost(parent, unCapWord));
 		unCapNode.parent = parent;
 		generateTransitions(unCapNode);
 
-		Node capNode = new Node(capitalizeWord(s[0]));
+		String capWord = capitalizeWord(s[0]);
+		Node capNode = new Node(capWord + " ", parent.cost
+				+ getCost(parent, capWord));
 		capNode.parent = parent;
 		generateTransitions(capNode);
 		parent.children.add(capNode);
 		parent.children.add(unCapNode);
-		if (s.length != 1) {
+
+		if (s.length > 1) {
 			for (int i = 0; i < unCapNode.children.size(); i++) {
 				unCapNode.children.set(
 						i,
@@ -109,8 +118,35 @@ public class HyperStringFSA2 {
 						generateNodes(Arrays.copyOfRange(s, 1, s.length),
 								capNode.children.get(i)));
 			}
+			// Add empty emission with zero count (WHAT COST FOR EMPTY
+			// EMISSION??)
+			 String[] nextWord = Arrays.copyOfRange(s, 1, 2);
+			 unCapNode = generateNodes(nextWord, unCapNode);
+			 capNode = generateNodes(nextWord, capNode);
+		}
+		if (s.length == 1) {
+			Node emptyEndNode1 = new Node("", parent.cost);
+			emptyEndNode1.parent = unCapNode;
+			unCapNode.children.add(emptyEndNode1);
+			
+			Node emptyEndNode2 = new Node("", parent.cost);
+			emptyEndNode2.parent = capNode;
+			capNode.children.add(emptyEndNode2);
 		}
 		return parent;
+	}
+
+	private double getCost(Node parent, String word) {
+		String ngram = backTrack(parent, word, nGram.getNGramLength() - 2);
+		int counts = nGram.counts(ngram.split(" "));
+		if (counts > 0) {
+			System.err.println("Generating cost for ngram: "
+					+ Arrays.toString(ngram.split(" ")) + "\nngram length "
+					+ nGram.getNGramLength());
+			System.err.println("Cost = " + counts);
+		}
+
+		return counts;
 	}
 
 	/**
@@ -118,11 +154,13 @@ public class HyperStringFSA2 {
 	 * 
 	 * @param node
 	 */
-	private void generateTransitions(Node node) {
+	private void generateTransitions(Node parent) {
 		for (int i = 0; i < TRANSITION_COUNT; i++) {
-			Node transNode = new Node(TRANSITIONS[i]);
-			transNode.parent = node;
-			node.children.add(transNode);
+			String emission = TRANSITIONS[i];
+			Node transNode = new Node(emission, parent.cost
+					+ getCost(parent, emission));
+			transNode.parent = parent;
+			parent.children.add(transNode);
 		}
 
 	}
@@ -152,19 +190,25 @@ public class HyperStringFSA2 {
 
 	public static void main(String... args) {
 		String[] words = { "mars", "scientists" };
-		HyperStringFSA2 fsa = new HyperStringFSA2(words);
-		for (String[] s : fsa.outputs) {
+		NGramWrapper ngw = new NGramWrapper(3);
+		ngw.readFile(new File("sentences.txt"));
+
+		HyperStringFSA2 fsa = new HyperStringFSA2(words, ngw);
+		for (String[] s : fsa.getOutputs()) {
 			System.out.println(Arrays.toString(s));
 		}
+
 	}
 
 	private class Node {
 		String value;
+		double cost;
 		Node parent;
 		Vector<Node> children;
 
-		public Node(String value) {
+		public Node(String value, double cost) {
 			children = new Vector<Node>();
+			this.cost = cost;
 			this.value = value;
 		}
 
@@ -172,4 +216,5 @@ public class HyperStringFSA2 {
 			return value;
 		}
 	}
+
 }
