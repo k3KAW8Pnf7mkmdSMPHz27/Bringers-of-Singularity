@@ -19,6 +19,15 @@ import opennlp.tools.ngram.NGramModel;
 
 public class asketTest {
     public static void main(String[] args) {
+        int nGramLength = 6;
+        String trainOn = "corpus.txt";
+
+        NGramWrapper ngw = new NGramWrapper();
+        ngw.readFile("corpus.txt");
+
+
+
+        /*
         int nGramLength = 2;
         for(int i = 0; i < args.length; i += 2) {
             if(args[i].equals("n-gram")) {
@@ -27,6 +36,66 @@ public class asketTest {
         }
 
         handleInput(nGramLength);
+        */
+    }
+
+    /**
+     * The underlying assumption is that fakeHyperFSA()[0] is space and that space is the most common in-between in the corpus.
+     * matrix[][][0] = the score
+     * matrix[][][1] = used for backtracking purposes and terminates on -1.
+     */
+    private static String[] dynProg(final String[] punctuation, final String[] words, final int NGramLength) {
+        double[][][] matrix = new double[words.length][punctuation.length][2];
+
+        /*
+        Init
+         */
+        String[] temp = fakeHyperFSA(words, 0, NGramLength);
+        for(int i = 0; i < matrix[0].length; i++) {
+            double NGramScore = fakeNGramValue(temp[i]);
+            matrix[0][i][0] = NGramScore;
+            matrix[0][i][1] = -1; //-1 will be used to stop the backtrack.
+        }
+
+        /*
+        Calculating matrix ...
+         */
+        for(int i = 1; i < matrix.length-NGramLength; i++) {
+            for(int j = 0; j < matrix[i].length; j++) {
+                String[] NGrams = fakeHyperFSA(words, i, NGramLength);
+                for(int k = 0; k < NGramLength; k++) {
+                    double NGramScore = fakeNGramValue(NGrams[k]);
+
+
+                }
+            }
+        }
+
+        /*
+        Decode step
+         */
+    }
+
+    private static String[] fakeHyperFSA(String[] s, int from, int NGramLength) {
+        return null;
+    }
+
+    private static double fakeNGramValue(String[] s) {
+        return 0;
+    }
+
+    /*
+    Continuously step through the input
+     */
+    private static void oneWordStep() {
+
+    }
+
+    /*
+    If a . or ! or ? is detected, make the word afterward the start of a new sentence.
+     */
+    private static void oneWordJump() {
+
     }
 
     private static String[] tempFSA(String[] input) {

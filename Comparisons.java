@@ -38,12 +38,6 @@ public class Comparisons {
             System.err.println("F-score for "+punctuations[i]+" = "+FScore[i]);
         }
         System.err.println("Total f-score is "+FScore[FScore.length-1]);
-        /*
-        System.err.println("F-score for question marks: "+getFScore('?', generated, original));
-        System.err.println("F-score for exclamation marks: "+getFScore('!', generated, original));
-        System.err.println("F-score for periods: "+getFScore('.', generated, original));
-        System.err.println("F-score for commas: "+getFScore(',', generated, original));
-        */
     }
 
     /**
@@ -53,7 +47,7 @@ public class Comparisons {
         return Double.NaN;
     }
     /**
-    Not implemented yet ...
+    Might be implemented.
      */
     private static double[] getFScore(char[] punctuation, File generated, File original) {
         double FScore[] = new double[punctuation.length+1];
