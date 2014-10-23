@@ -45,7 +45,7 @@ public class NGramWrapper {
 
         ngram.readFile(searchIn);
         System.err.println("Total ngram length = "+getNumberOfNGrams(ngram.getNgram()));
-        System.err.println("Total sentences = "+ngram.numberOfSentences);
+        System.err.println("Total lines = "+ngram.numberOfSentences);
         System.err.println("Total tokens = "+ngram.numberOfTokens);
     }
 
