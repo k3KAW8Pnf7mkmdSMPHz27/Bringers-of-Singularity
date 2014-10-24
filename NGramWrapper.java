@@ -17,7 +17,6 @@ import opennlp.tools.ngram.NGramModel;
 import opennlp.tools.util.StringList;
 
 public class NGramWrapper {
-
     /**
      * The Stupid Backoff currently assumes that if it has never seen a word before it is equivalent to having seen it once (i.e. very unlikely).
      */
@@ -26,13 +25,14 @@ public class NGramWrapper {
     /*
     From Stanley F. Chen and Joshua Goodman (1998), “An Empirical Study of Smoothing Techniques for Language Modeling”
      */
-    public final static int KNESER_NEY = 1;
-    public final static int MODIFIED_KNESER_NEY = 2;
+    public final static int MODIFIED_KNESER_NEY = 1;
+    public final static int JELINEK_MERCER = 2;
     /**
      * Sets which smoothing technique should be used.
      * Note, this is not thread-safe.
      */
     public static int smoothing = STUPID_BACKOFF;
+
     /*
     Todo ?
      */
