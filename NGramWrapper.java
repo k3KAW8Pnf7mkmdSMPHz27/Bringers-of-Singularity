@@ -74,7 +74,7 @@ public class NGramWrapper {
             case STUPID_BACKOFF:
                 if(s.length>1) {
                     value = counts(s);
-                    String argument[] = new String[s.length-2];
+                    String argument[] = new String[s.length-1];
                     System.arraycopy(s, 0, argument, 0, argument.length);
                     if(value>0) {
                         value /= counts(argument);
