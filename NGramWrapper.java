@@ -19,6 +19,7 @@ import opennlp.tools.util.StringList;
 public class NGramWrapper {
 
     public final static int STUPID_BACKOFF = 0;
+    public final static double STUPID_BACKOFF_ALPHA = 0.4; //Following http://stackoverflow.com/questions/16383194/stupid-backoff-implementation-clarification
     public final static int KNESER_NEY = 1;
     public final static int GOOD_TURING = 2;
     public static int smoothing = STUPID_BACKOFF;
@@ -53,12 +54,24 @@ public class NGramWrapper {
         ngw.readFile(searchIn);
     }
 
-
     public double getCostOfNGram(String[] s) {
         double value = 0;
         switch (smoothing) {
             case STUPID_BACKOFF:
-                value = counts(s);
+                if(s.length>1) {
+                    value = counts(s);
+                    String argument[] = new String[s.length-2];
+                    System.arraycopy(s, 0, argument, 0, argument.length);
+                    if(value>0) {
+                        value /= counts(argument);
+                    } else {
+                        value = STUPID_BACKOFF_ALPHA*getCostOfNGram(argument);
+                    }
+                } else {
+                    double counts = counts(s);
+                    double total = ngram[0].numberOfGrams();
+                    value = counts/total;
+                }
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -80,7 +93,7 @@ public class NGramWrapper {
         return ngram[ngram.length-1];
     }
     public int getNGramLength() {
-    	return nGramLength;
+        return nGramLength;
     }
     public void readFile(File f) {
         for(int i = 0; i < ngram.length; i++) {
