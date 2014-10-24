@@ -18,6 +18,9 @@ import opennlp.tools.util.StringList;
 
 public class NGramWrapper {
 
+    /**
+     * The Stupid Backoff currently assumes that if it has never seen a word before it is equivalent to having seen it once (i.e. very unlikely).
+     */
     public final static int STUPID_BACKOFF = 0;
     public final static double STUPID_BACKOFF_ALPHA = 0.4; //Following http://stackoverflow.com/questions/16383194/stupid-backoff-implementation-clarification
     /*
@@ -79,6 +82,9 @@ public class NGramWrapper {
                     }
                 } else {
                     double counts = counts(s);
+                    if(counts==0) {
+                        counts=1;
+                    }
                     double total = ngram[0].numberOfGrams();
                     value = counts/total;
                 }
