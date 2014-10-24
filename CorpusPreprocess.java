@@ -6,9 +6,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * This class loads the file corpus.txt, reads it line by line.
- * Each line is processed according to a set of rules, and the resuls
- * are written to ppCorpus.txt, line by line.
+ * This class loads the file corpus.txt, reads the file line by line up to the nr of lines provided in args[0].
+ * Each line is processed according to a set of rules, and the resuls are written to ppCorpus.txt, line by line.
+ * After next it reads the following lines args[0]+1 to args[0]+args[1] and preprocesses them for testing,
+ * saving the results in testSentences.txt
+ * 
  * 
  * @author Jasmin Suljkic
  */
@@ -16,8 +18,8 @@ public class CorpusPreprocess {
 
 	/**
 	 * No arguments are taken in account. 
-	 * Statically configured file corpus.txt is read and ppCorpus.txt is created and written to.
-	 * @param args
+	 * Statically configured file corpus.txt is read and ppCorpus.txt as well as testSentences.txt is created and written to.
+	 * @param args -> X Y, (X: lines to for learning, Y: lines for testing)
 	 */
 	public static void main(String[] args) {
 		//args[0] -> Amount of lines to preprocess for learning
