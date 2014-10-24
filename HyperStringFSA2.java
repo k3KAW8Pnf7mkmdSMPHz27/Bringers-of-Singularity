@@ -10,9 +10,9 @@ import java.util.Vector;
  *
  */
 public class HyperStringFSA2 {
-	public static final String[] TRANSITIONS = {",COMMA ", ".PERIOD ",
+	public static final String[] TRANSITIONS = { ",COMMA ", ".PERIOD ",
 			"\\?QMARK ", "!EXCL " };
-	public static final String[] POSTPROCESSES = {", ", ". ", "? ", "! " };
+	public static final String[] POSTPROCESSES = { ", ", ". ", "? ", "! " };
 	public static final int TRANSITION_COUNT = 4;
 	public static final int STATES_COUNT = 2;
 
@@ -34,8 +34,8 @@ public class HyperStringFSA2 {
 	}
 
 	/**
-	 * Construct the FSA with all possible outputs with each emission having a 
-	 * cost (ATM it's just the frequency of occurences in the corpus)
+	 * Construct the FSA with all possible outputs with each emission having a
+	 * cost
 	 * 
 	 * @param s
 	 *            Array of words
@@ -120,15 +120,15 @@ public class HyperStringFSA2 {
 			}
 			// Add empty emission with zero count (WHAT COST FOR EMPTY
 			// EMISSION??)
-			 String[] nextWord = Arrays.copyOfRange(s, 1, 2);
-			 unCapNode = generateNodes(nextWord, unCapNode);
-			 capNode = generateNodes(nextWord, capNode);
+			String[] nextWord = Arrays.copyOfRange(s, 1, 2);
+			unCapNode = generateNodes(nextWord, unCapNode);
+			capNode = generateNodes(nextWord, capNode);
 		}
 		if (s.length == 1) {
 			Node emptyEndNode1 = new Node("", parent.cost);
 			emptyEndNode1.parent = unCapNode;
 			unCapNode.children.add(emptyEndNode1);
-			
+
 			Node emptyEndNode2 = new Node("", parent.cost);
 			emptyEndNode2.parent = capNode;
 			capNode.children.add(emptyEndNode2);
@@ -138,15 +138,13 @@ public class HyperStringFSA2 {
 
 	private double getCost(Node parent, String word) {
 		String ngram = backTrack(parent, word, nGram.getNGramLength() - 2);
-		int counts = nGram.counts(ngram.split(" "));
-		if (counts > 0) {
-			System.err.println("Generating cost for ngram: "
-					+ Arrays.toString(ngram.split(" ")) + "\nngram length "
-					+ nGram.getNGramLength());
-			System.err.println("Cost = " + counts);
-		}
+		double cost = nGram.getCostOfNGram(ngram.split(" "));
+		System.err.println("Generating cost for ngram: "
+				+ Arrays.toString(ngram.split(" ")) + "\nngram length "
+				+ nGram.getNGramLength());
+		System.err.println("Cost = " + cost);
 
-		return counts;
+		return cost;
 	}
 
 	/**
