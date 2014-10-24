@@ -138,10 +138,10 @@ public class HyperStringFSA2 {
 
 	private double getCost(Node parent, String word) {
 		String ngram = backTrack(parent, word, nGram.getNGramLength() - 2);
-		double cost = nGram.getCostOfNGram(ngram.split(" "));
 		System.err.println("Generating cost for ngram: "
 				+ Arrays.toString(ngram.split(" ")) + "\nngram length "
 				+ nGram.getNGramLength());
+		double cost = nGram.getCostOfNGram(ngram.split(" "));
 		System.err.println("Cost = " + cost);
 
 		return cost;
