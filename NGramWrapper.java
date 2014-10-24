@@ -47,26 +47,25 @@ public class NGramWrapper {
     }
 
 
+    public double getCostOfNGram(String[] s) {
+
+        return 0;
+    }
     public NGramWrapper(int nGramLength) {
         this.nGramLength = nGramLength;
     }
-
     public boolean exists(String[] s) {
         return ngram.contains(new StringList(s));
     }
-
     public int counts(String[] s) {
         return ngram.getCount(new StringList(s));
     }
-
     public NGramModel getNgram() {
         return ngram;
     }
-    
     public int getNGramLength() {
     	return nGramLength;
     }
-
     public void readFile(File f) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(f));
