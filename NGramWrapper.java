@@ -112,6 +112,7 @@ public class NGramWrapper {
         return nGramLength;
     }
     public void readFile(File f) {
+        System.err.println(f.getAbsolutePath());
         for(int i = 0; i < ngram.length; i++) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(f));
@@ -126,7 +127,7 @@ public class NGramWrapper {
                         /*
                         Fixa......................
                          */
-                System.err.println("Total ngram length = " + getNgram().numberOfGrams());
+                System.err.println("Total ngram length = " + ngram[i].numberOfGrams());
                 System.err.println("Total sentences = " + numberOfSentences);
                 System.err.println("Total tokens = " + numberOfTokens);
             } catch (IOException e) {
