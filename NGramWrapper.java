@@ -20,8 +20,15 @@ public class NGramWrapper {
 
     public final static int STUPID_BACKOFF = 0;
     public final static double STUPID_BACKOFF_ALPHA = 0.4; //Following http://stackoverflow.com/questions/16383194/stupid-backoff-implementation-clarification
+    /*
+    From Stanley F. Chen and Joshua Goodman (1998), “An Empirical Study of Smoothing Techniques for Language Modeling”
+     */
     public final static int KNESER_NEY = 1;
-    public final static int GOOD_TURING = 2;
+    public final static int MODIFIED_KNESER_NEY = 2;
+    /**
+     * Sets which smoothing technique should be used.
+     * Note, this is not thread-safe.
+     */
     public static int smoothing = STUPID_BACKOFF;
     /*
     Todo ?
@@ -55,6 +62,9 @@ public class NGramWrapper {
     }
 
     public double getCostOfNGram(String[] s) {
+        return getCostOfNGram(s, this.smoothing);
+    }
+    public double getCostOfNGram(String[] s, int smoothing) {
         double value = 0;
         switch (smoothing) {
             case STUPID_BACKOFF:
