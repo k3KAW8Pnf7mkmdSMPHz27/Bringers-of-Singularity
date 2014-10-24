@@ -22,8 +22,8 @@ public class asketTest {
         int nGramLength = 6;
         String trainOn = "corpus.txt";
 
-        NGramWrapper ngw = new NGramWrapper();
-        ngw.readFile("corpus.txt");
+        NGramWrapper ngw = new NGramWrapper(nGramLength);
+        ngw.readFile(new File("corpus.txt"));
 
 
 
@@ -44,13 +44,14 @@ public class asketTest {
      * matrix[][][0] = the score
      * matrix[][][1] = used for backtracking purposes and terminates on -1.
      */
+
     private static String[] dynProg(final String[] punctuation, final String[] words, final int NGramLength) {
         double[][][] matrix = new double[words.length][punctuation.length][2];
 
         /*
         Init
          */
-        String[] temp = fakeHyperFSA(words, 0, NGramLength);
+        String[][] temp = fakeHyperFSA(words, 0, NGramLength);
         for(int i = 0; i < matrix[0].length; i++) {
             double NGramScore = fakeNGramValue(temp[i]);
             matrix[0][i][0] = NGramScore;
@@ -61,8 +62,10 @@ public class asketTest {
         Calculating matrix ...
          */
         for(int i = 1; i < matrix.length-NGramLength; i++) {
+            String[][] NGrams = fakeHyperFSA(words, i, NGramLength);
             for(int j = 0; j < matrix[i].length; j++) {
-                String[] NGrams = fakeHyperFSA(words, i, NGramLength);
+
+
                 for(int k = 0; k < NGramLength; k++) {
                     double NGramScore = fakeNGramValue(NGrams[k]);
 
@@ -74,30 +77,26 @@ public class asketTest {
         /*
         Decode step
          */
-    }
-
-    private static String[] fakeHyperFSA(String[] s, int from, int NGramLength) {
         return null;
     }
-
+    private static String[][] fakeHyperFSA(String[] s, int from, int NGramLength) {
+        return null;
+    }
     private static double fakeNGramValue(String[] s) {
         return 0;
     }
-
     /*
     Continuously step through the input
      */
     private static void oneWordStep() {
 
     }
-
     /*
     If a . or ! or ? is detected, make the word afterward the start of a new sentence.
      */
     private static void oneWordJump() {
 
     }
-
     private static String[] tempFSA(String[] input) {
         char[] transitions = {' ', ',', '.', '?'};
         int numberOfTransitions = transitions.length;
@@ -127,7 +126,6 @@ public class asketTest {
 
         return output;
     }
-
     private static void handleInput(int nGramLength) {
         NGramWrapper ngw = new NGramWrapper(nGramLength);
         ngw.readFile(new File("/Users/JAsketorp/Documents/DD2380/smsCorpusAsText.txt"));
@@ -170,7 +168,6 @@ public class asketTest {
             e.printStackTrace();
         }
     }
-
     private static String[][] createNGramsFromText(int nGramLength, String input[]) {
         String output[][] = new String[input.length-nGramLength+1][nGramLength];
         for(int i = 0; i < output.length; i++) {
@@ -181,7 +178,6 @@ public class asketTest {
         }
         return output;
     }
-
     private static void workAroundToSaveNGramModel(OutputStream out, NGramModel ngm) {
         PrintWriter pw = new PrintWriter(out);
 

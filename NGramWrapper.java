@@ -5,6 +5,7 @@ OpenNLP can be found at: https://opennlp.apache.org/cgi-bin/download.cgi
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.ArrayIndexOutOfBoundsException;
 import java.lang.String;
 import java.lang.StringBuilder;
 import java.util.ArrayList;
@@ -21,17 +22,18 @@ public class NGramWrapper {
     private static boolean padStart = false; //If {<s><s><s>I} is a correct 3-gram
     private static boolean padEnd = false; //If {be.<e><e><e>} is a correct 3-gram
 
-
-    private int nGramLength;
     long numberOfSentences = 0;
     long numberOfTokens = 0;
 
-    NGramModel ngram = new NGramModel();
+    private int nGramLength;
+
+    //NGramModel ngram = new NGramModel();
+    NGramModel ngram[];
 
     public static void main(String[] args) {
         File searchIn = new File("corpus.txt");
         int nGramLength=3;
-        NGramWrapper ngram = new NGramWrapper(nGramLength);
+        //NGramWrapper ngram = new NGramWrapper(nGramLength);
         for(int i = 0; i < args.length; i+=2) {
             if(args[i].equals("n-gram")) {
                 nGramLength = Integer.parseInt(args[i+1]);
@@ -41,48 +43,56 @@ public class NGramWrapper {
                 System.err.println(args[i]+ " is invalid.");
             }
         }
-
-        ngram.readFile(searchIn);
-
+        NGramWrapper ngw = new NGramWrapper(nGramLength);
+        ngw.readFile(searchIn);
     }
 
 
     public double getCostOfNGram(String[] s) {
 
+
         return 0;
     }
     public NGramWrapper(int nGramLength) {
         this.nGramLength = nGramLength;
+        ngram = new NGramModel[nGramLength];
     }
     public boolean exists(String[] s) {
-        return ngram.contains(new StringList(s));
+        return ngram[s.length-1].contains(new StringList(s));
     }
     public int counts(String[] s) {
-        return ngram.getCount(new StringList(s));
+        return ngram[s.length-1].getCount(new StringList(s));
     }
     public NGramModel getNgram() {
-        return ngram;
+        return ngram[ngram.length-1];
     }
     public int getNGramLength() {
     	return nGramLength;
     }
     public void readFile(File f) {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(f));
-            String newLine = br.readLine();
-            while(newLine!=null) {
-                addNGrams(newLine, nGramLength);
-                numberOfSentences++;
-                newLine=br.readLine();
+        for(int i = 0; i < ngram.length; i++) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(f));
+                String newLine = br.readLine();
+                ngram[i] = new NGramModel();
+                while (newLine != null) {
+                    addNGrams(newLine, (i+1), ngram[i]);
+                    numberOfSentences++;
+                    newLine = br.readLine();
+                }
+                System.err.println("N-Gram size = "+(i+1));
+                        /*
+                        Fixa......................
+                         */
+                System.err.println("Total ngram length = " + getNgram().numberOfGrams());
+                System.err.println("Total sentences = " + numberOfSentences);
+                System.err.println("Total tokens = " + numberOfTokens);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            System.err.println("Total ngram length = "+getNgram().numberOfGrams());
-            System.err.println("Total sentences = "+numberOfSentences);
-            System.err.println("Total tokens = "+numberOfTokens);
-        } catch(IOException e) {
-            e.printStackTrace();
         }
     }
-    private void addNGrams(String string, int length) {
+    private void addNGrams(String string, int length, NGramModel ngm) {
         String input[] = string.split(" ");
         numberOfTokens += input.length;
         for(int i = 0; i < input.length-length+1; i++) {
@@ -90,7 +100,7 @@ public class NGramWrapper {
             for(int j = 0; j < length; j++) {
                 ngram[j] = input[i+j];
             }
-            this.ngram.add(new StringList(ngram));
+            ngm.add(new StringList(ngram));
         }
     }
 }
