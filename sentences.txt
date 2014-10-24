@@ -1,2 +1,4 @@
 mars scientists ,COMMA
 mars .PERIOD scientists ,COMMA
+mars .PERIOD scientists ,COMMA
+mars .PERIOD scientists ,COMMA

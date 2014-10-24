@@ -45,7 +45,7 @@ public class HyperStringFSA2 {
 	 * 
 	 */
 	private void constructFSA(String[] s, Vector<String[]> outputs) {
-		Node root = new Node("", 0d);
+		Node root = new Node("", 1.0);
 		root = generateNodes(s, root);
 		generateOutputs(root, outputs);
 	}
@@ -94,14 +94,12 @@ public class HyperStringFSA2 {
 	 */
 	private Node generateNodes(String[] s, Node parent) {
 		String unCapWord = deCapitalizeWord(s[0]);
-		Node unCapNode = new Node(unCapWord + " ", parent.cost
-				+ getCost(parent, unCapWord));
+		Node unCapNode = new Node(unCapWord + " ", parent.cost * getCost(parent, unCapWord));
 		unCapNode.parent = parent;
 		generateTransitions(unCapNode);
 
 		String capWord = capitalizeWord(s[0]);
-		Node capNode = new Node(capWord + " ", parent.cost
-				+ getCost(parent, capWord));
+		Node capNode = new Node(capWord + " ", parent.cost * getCost(parent, capWord));
 		capNode.parent = parent;
 		generateTransitions(capNode);
 		parent.children.add(capNode);
@@ -137,11 +135,12 @@ public class HyperStringFSA2 {
 	}
 
 	private double getCost(Node parent, String word) {
-		String ngram = backTrack(parent, word, nGram.getNGramLength() - 2);
+		String ngram = backTrack(parent, word, nGram.getNGramLength() - 2);	
+		double cost = nGram.getCostOfNGram(ngram.split(" "));
+		
 		System.err.println("Generating cost for ngram: "
 				+ Arrays.toString(ngram.split(" ")) + "\nngram length "
 				+ nGram.getNGramLength());
-		double cost = nGram.getCostOfNGram(ngram.split(" "));
 		System.err.println("Cost = " + cost);
 
 		return cost;
@@ -156,7 +155,7 @@ public class HyperStringFSA2 {
 		for (int i = 0; i < TRANSITION_COUNT; i++) {
 			String emission = TRANSITIONS[i];
 			Node transNode = new Node(emission, parent.cost
-					+ getCost(parent, emission));
+					* getCost(parent, emission));
 			transNode.parent = parent;
 			parent.children.add(transNode);
 		}
