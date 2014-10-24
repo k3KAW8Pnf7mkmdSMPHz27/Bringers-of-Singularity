@@ -19,6 +19,8 @@ import opennlp.tools.util.StringList;
 public class NGramWrapper {
 
     public final static int STUPID_BACKOFF = 0;
+    public final static int KNESER_NEY = 1;
+    public final static int GOOD_TURING = 2;
     public static int smoothing = STUPID_BACKOFF;
     /*
     Todo ?
