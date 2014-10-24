@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.ArrayIndexOutOfBoundsException;
+import java.lang.IllegalArgumentException;
 import java.lang.String;
 import java.lang.StringBuilder;
 import java.util.ArrayList;
@@ -16,6 +17,9 @@ import opennlp.tools.ngram.NGramModel;
 import opennlp.tools.util.StringList;
 
 public class NGramWrapper {
+
+    public final static int STUPID_BACKOFF = 0;
+    public static int smoothing = STUPID_BACKOFF;
     /*
     Todo ?
      */
@@ -49,9 +53,16 @@ public class NGramWrapper {
 
 
     public double getCostOfNGram(String[] s) {
+        double value = 0;
+        switch (smoothing) {
+            case STUPID_BACKOFF:
+                value = counts(s);
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
 
-
-        return 0;
+        return value;
     }
     public NGramWrapper(int nGramLength) {
         this.nGramLength = nGramLength;

@@ -38,13 +38,11 @@ public class asketTest {
         handleInput(nGramLength);
         */
     }
-
     /**
      * The underlying assumption is that fakeHyperFSA()[0] is space and that space is the most common in-between in the corpus.
      * matrix[][][0] = the score
      * matrix[][][1] = used for backtracking purposes and terminates on -1.
      */
-
     private static String[] dynProg(final String[] punctuation, final String[] words, final int NGramLength) {
         double[][][] matrix = new double[words.length][punctuation.length][2];
 
@@ -85,13 +83,13 @@ public class asketTest {
     private static double fakeNGramValue(String[] s) {
         return 0;
     }
-    /*
+    /**
     Continuously step through the input
      */
     private static void oneWordStep() {
 
     }
-    /*
+    /**
     If a . or ! or ? is detected, make the word afterward the start of a new sentence.
      */
     private static void oneWordJump() {
