@@ -11,6 +11,7 @@ import java.lang.String;
 import java.lang.StringBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Vector;
 import java.io.File;
 import opennlp.tools.ngram.NGramModel;
@@ -108,6 +109,15 @@ public class NGramWrapper {
     public NGramModel getNgram() {
         return ngram[ngram.length-1];
     }
+    private int getNumberOfNGrams(NGramModel ngm) {
+        Iterator<StringList> iterator = ngm.iterator();
+        int count = 0;
+        while(iterator.hasNext()) {
+            iterator.next();
+            count++;
+        }
+        return count;
+    }
     public int getNGramLength() {
         return nGramLength;
     }
@@ -127,7 +137,7 @@ public class NGramWrapper {
                         /*
                         Fixa......................
                          */
-                System.err.println("Total ngram length = " + ngram[i].numberOfGrams());
+                System.err.println("Total ngram length = " + getNumberOfNGrams(ngram[i]));//.numberOfGrams());
                 System.err.println("Total sentences = " + numberOfSentences);
                 System.err.println("Total tokens = " + numberOfTokens);
             } catch (IOException e) {
