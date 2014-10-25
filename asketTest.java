@@ -23,9 +23,15 @@ public class asketTest {
         String trainOn = "corpus.txt";
 
         NGramWrapper ngw = new NGramWrapper(nGramLength);
-        ngw.readFile(new File("corpus.txt"));
+        //ngw.readFile(new File("corpus.txt"));
 
-
+        String[][] test = HFSA(args);
+        for(int i = 0; i < test.length; i++) {
+            for(int j = 0; j < test[i].length; j++) {
+                System.err.print(test[i][j] + " ");
+            }
+            System.err.println();
+        }
         /*
         int nGramLength = 2;
         for(int i = 0; i < args.length; i += 2) {
@@ -124,6 +130,67 @@ public class asketTest {
     private static void oneWordJump() {
 
     }
+    /**
+     * A case insensitive HFSA ...
+     * @param input
+     * @return
+     */
+    private static String[][] HFSA(String[] input) {
+        int NGramLength = input.length;
+        String[] transitions = {" ", ",COMMA", ".PERIOD", "?QMARK", "!EXCL"};
+        //String[] transitions = {" ", ".PERIOD"};
+        int numberOfTransitionsInString = input.length/2;
+        int internalCounters[] = new int[numberOfTransitionsInString];
+        Arrays.fill(internalCounters, transitions.length-1);
+        int numberOfReturnValues = (int)Math.pow(transitions.length, numberOfTransitionsInString);
+        String[][] returnValue = new String[numberOfReturnValues][NGramLength];
+        System.err.println("NumberOfTransitions = "+numberOfTransitionsInString);
+        System.err.println("Transitions length = "+transitions.length);
+
+        int counter = 0;
+        while (internalCounters[0]>=0) {
+            int positionInInnerArray = 0;
+            int positionInOuterArray = 0;
+            String[] string = new String[input.length];
+
+            for(int i = 0; i < numberOfTransitionsInString; i++) {
+                string[positionInInnerArray] = input[positionInOuterArray];
+                positionInOuterArray++;
+                positionInInnerArray++;
+                if(!transitions[internalCounters[i]].equals(" ")) {
+                    string[positionInInnerArray] = transitions[internalCounters[i]];
+                    positionInInnerArray++;
+                } else {
+                    string[positionInInnerArray] = input[positionInOuterArray];
+                    positionInInnerArray++;
+                    positionInOuterArray++;
+                }
+            }
+            for(int i = positionInInnerArray; i < NGramLength; i++) {
+                string[i] = input[positionInOuterArray];
+                positionInOuterArray++;
+            }
+
+            internalCounters[internalCounters.length-1]--;
+
+            for(int i = internalCounters.length-1; i > 0; i--) {
+                if(internalCounters[i]<0) {
+                    internalCounters[i] = transitions.length-1;
+                    internalCounters[i-1]--;
+                }
+            }
+
+            returnValue[counter] = string;
+            counter++;
+        }
+
+        return returnValue;
+    }
+    /**
+     * Note, this method DOES NOT WORK. It SHOULD generate ArrayIndexOutOfBoundsException.
+     * @param input
+     * @return
+     */
     private static String[] tempFSA(String[] input) {
         char[] transitions = {' ', ',', '.', '?'};
         int numberOfTransitions = transitions.length;
