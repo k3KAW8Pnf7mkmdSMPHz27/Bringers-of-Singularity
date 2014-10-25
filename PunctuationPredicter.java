@@ -13,7 +13,7 @@ import java.util.Arrays;
  */
 public class PunctuationPredicter {
 
-	public static final String CORPUS_TEST_PATH = "sentences.txt";
+	public static final String CORPUS_TEST_PATH = "ppSentenses.txt";
 	public static NGramWrapper nGramWrapper;
 
 	/**
@@ -55,14 +55,13 @@ public class PunctuationPredicter {
 		String prediction = "";
 		double maxCount = 0;
 		for (String[] s : hypString.getOutputs()) {
-			// System.err.println(Arrays.toString(s));
+			//System.err.println(Arrays.toString(s));
 			double count = Double.parseDouble(s[s.length - 1]);
 			if (count > maxCount) {
 				prediction = "";
 				maxCount = count;
 				for (String w : s) {
 					prediction += w + " ";
-					prediction = HyperStringFSA2.postProcessing(prediction);
 				}
 			}
 		}
