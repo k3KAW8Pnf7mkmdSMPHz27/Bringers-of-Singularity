@@ -19,12 +19,11 @@ import opennlp.tools.ngram.NGramModel;
 
 public class asketTest {
     public static void main(String[] args) {
-        int nGramLength = 6;
+        int nGramLength = 2;
         String trainOn = "corpus.txt";
 
         NGramWrapper ngw = new NGramWrapper(nGramLength);
         ngw.readFile(new File("corpus.txt"));
-
 
 
         /*
@@ -86,8 +85,38 @@ public class asketTest {
     /**
     Continuously step through the input
      */
-    private static void oneWordStep() {
+    private static void oneWordStep(String words[], int NGramLength, NGramWrapper ngw) {
+        /*
+        Init must be all possible versions of the first n-gram size.
+         */
+        int version = -1;
+        char[] transitions = {' ', ',', '.', '?'};
+        int possibleCombinations = NGramLength*transitions.length*transitions.length+1;
+        double maxValue = Double.MIN_VALUE;
+        for(int i = 0; i < possibleCombinations; i++) {
 
+        }
+    }
+    private static String[][] createPermuatedStrings(final String words[], final int numberOfPermuations) {
+        String[][] permuations = new String[numberOfPermuations][words.length];
+        final char[] transitions = {' ', ',', '.', '?'};
+        String[] tempArg = new String[words.length/2];
+        System.arraycopy(words, 0, tempArg, 0, tempArg.length);
+        String[] tempReturn = tempFSA(tempArg);
+        String[][] moreTemporary = new String[numberOfPermuations][words.length];
+        for(int i = 0; i < tempReturn.length; i++) {
+            System.arraycopy(tempReturn[i].split("[ ,.?!]+"), 0, moreTemporary[i], 0, tempReturn[i].split("[ ,.?!]+").length);
+        }
+        if(tempReturn[0].split("[ ,.?!]+").length!=words.length) { //A word is missing ...
+
+        }
+
+        if(permuations[permuations.length-1]!=null) {
+            System.err.println("Last entry of permutations is != null");
+            System.exit(1);
+        }
+        permuations[permuations.length-1]=words;
+        return permuations;
     }
     /**
     If a . or ! or ? is detected, make the word afterward the start of a new sentence.
