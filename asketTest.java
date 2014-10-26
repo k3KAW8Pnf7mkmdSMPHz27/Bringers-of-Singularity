@@ -18,13 +18,34 @@ import opennlp.tools.ngram.NGramModel;
 
 
 public class asketTest {
+    final static String[] transitions = {" ", ",COMMA", ".PERIOD", "?QMARK", "!EXCL"}; //Change space to null
     public static void main(String[] args) {
-        int nGramLength = 2;
-        String trainOn = "corpus.txt";
+        int nGramLength = 4;
+        String trainOn = "ppCorpus.txt";
+        String evaluate = "testSentences.txt";
 
         NGramWrapper ngw = new NGramWrapper(nGramLength);
-        //ngw.readFile(new File("corpus.txt"));
+        ngw.readFile(new File(trainOn));
 
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(evaluate));
+            int counter = 6;
+            while(counter>0) { //Risky?
+                String fix = br.readLine().trim();
+                System.err.println("---------------------");
+                System.err.println(fix);
+                String input[] = fix.split("( )+");
+                if(input.length<nGramLength) { //This is not correct
+                    oneWordJump(input, input.length, ngw);
+                } else {
+                    oneWordJump(input, nGramLength, ngw);
+                }
+                counter--;
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        /*
         String[][] test = HFSA(args);
         for(int i = 0; i < test.length; i++) {
             for(int j = 0; j < test[i].length; j++) {
@@ -32,6 +53,7 @@ public class asketTest {
             }
             System.err.println();
         }
+        */
         /*
         int nGramLength = 2;
         for(int i = 0; i < args.length; i += 2) {
@@ -101,6 +123,7 @@ public class asketTest {
         double maxValue = Double.MIN_VALUE;
         for(int i = 0; i < possibleCombinations; i++) {
 
+
         }
     }
     private static String[][] createPermuatedStrings(final String words[], final int numberOfPermuations) {
@@ -125,10 +148,92 @@ public class asketTest {
         return permuations;
     }
     /**
+     * Note that the method does definitvely not do this.
     If a . or ! or ? is detected, make the word afterward the start of a new sentence.
      */
-    private static void oneWordJump() {
+    private static void oneWordJump(String words[], int NGramLength, NGramWrapper ngw) {
+        /*
+        Init
+         */
+        String[] start = initiateOneWordJump(words, NGramLength, ngw);
+        StringBuilder result = new StringBuilder();
+        for(int i = 0; i < start.length; i++) {
+            result.append(start[i]).append(' ');
+            System.err.print(start[i]+" ");
+        }
+        System.err.println();
 
+        int startPos = 0;
+        for(int i = 0; i < NGramLength; i++) {
+            for(int j = startPos; j < NGramLength; j++) {
+                if(start[i].equals(words[j])) {
+                    startPos=j+1;
+                    break;
+                }
+            }
+        }
+
+        for(int i = startPos; i < words.length; i++) {
+            int index = 1;
+            int emergencyBreak = 1; //To prevent repetition of the same word
+            while(index>0 && emergencyBreak>0) {
+                index = Integer.MAX_VALUE;
+                System.arraycopy(start, 1, start, 0, NGramLength - 1);
+                double maxValue = Double.NEGATIVE_INFINITY;
+                for (int j = 0; j < transitions.length; j++) {
+                    if (transitions[j] != transitions[0]) {
+                        start[start.length - 1] = transitions[j];
+                    } else {
+                        start[start.length - 1] = words[i];
+                    }
+                    double currentValue = ngw.getCostOfNGram(start);
+                    if(currentValue>maxValue) {
+                        maxValue=currentValue;
+                        index=j;
+                    }
+                }
+                if(index==0) {
+                    result.append(words[i]).append(' ');
+                    emergencyBreak++;
+                } else {
+                    result.append(transitions[index]).append(' ');
+                }
+                emergencyBreak--;
+            }
+            if(emergencyBreak==0) { //If emergency brake hits...
+                result.append(words[i]).append(' ');
+            }
+        }
+        System.out.println(result.toString());
+    }
+    /**
+     * Initiates oneWordJump.
+     * @param words
+     * @param NGramLength
+     * @param ngw
+     * @return
+     */
+    private static String[] initiateOneWordJump(String words[], int NGramLength, NGramWrapper ngw) {
+        String[] initString = new String[NGramLength];
+        System.arraycopy(words, 0, initString, 0, NGramLength);
+        String[][] potentialStartValues = HFSA(initString);
+        double maxValue = Double.NEGATIVE_INFINITY;
+        int index = -1;
+        for(int i = 0; i < potentialStartValues.length; i++) {
+            /*
+            for(int j = 0; j < potentialStartValues[i].length; j++) {
+                System.err.print(potentialStartValues[i][j]+" ");
+            }
+            System.err.println();
+            */
+            double currentValue = ngw.getCostOfNGram(potentialStartValues[i]);
+            //System.err.println(currentValue);
+            if(currentValue>maxValue) {
+                maxValue=currentValue;
+                index=i;
+            }
+        }
+        return potentialStartValues[index];
     }
     /**
      * A case insensitive HFSA ...
@@ -137,15 +242,12 @@ public class asketTest {
      */
     private static String[][] HFSA(String[] input) {
         int NGramLength = input.length;
-        String[] transitions = {" ", ",COMMA", ".PERIOD", "?QMARK", "!EXCL"};
-        //String[] transitions = {" ", ".PERIOD"};
+        //String[] transitions = {" ", ",COMMA", ".PERIOD", "?QMARK", "!EXCL"}; //Change space to null
         int numberOfTransitionsInString = input.length/2;
         int internalCounters[] = new int[numberOfTransitionsInString];
         Arrays.fill(internalCounters, transitions.length-1);
         int numberOfReturnValues = (int)Math.pow(transitions.length, numberOfTransitionsInString);
         String[][] returnValue = new String[numberOfReturnValues][NGramLength];
-        System.err.println("NumberOfTransitions = "+numberOfTransitionsInString);
-        System.err.println("Transitions length = "+transitions.length);
 
         int counter = 0;
         while (internalCounters[0]>=0) {
