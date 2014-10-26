@@ -71,14 +71,6 @@ public class PunctuationPredicter {
 
 	// Test method to run input from command line
 	private void handleInput(int nGramLength) {
-		NGramWrapper ngw = new NGramWrapper(nGramLength);
-		ngw.readFile(new File(CORPUS_TEST_PATH));
-		System.err.println("Corpus:");
-		System.err.println("Number of sentences: " + ngw.numberOfSentences);
-		System.err.println("Number of tokens: " + ngw.numberOfTokens);
-		System.err
-				.println("Number of grams: " + ngw.getNgram().numberOfGrams());
-		// ngw.serialize((OutputStream)(new FileOutputStream("test.txt")));
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					System.in));
@@ -95,13 +87,14 @@ public class PunctuationPredicter {
 
 	// Test
 	public static void main(String[] args) {
-		int nGramLength = 3;
+		int nGramLength = 4;
 		for (int i = 0; i < args.length; i += 2) {
 			if (args[i].equals("n-gram")) {
 				nGramLength = Integer.parseInt(args[i + 1]);
 			}
 		}
-		PunctuationPredicter pI = new PunctuationPredicter(nGramLength, "");
+		PunctuationPredicter pI = new PunctuationPredicter(nGramLength, "ppCorpus.txt");
+		System.out.println("Ready for prediction");
 		pI.handleInput(nGramLength);
 	}
 }

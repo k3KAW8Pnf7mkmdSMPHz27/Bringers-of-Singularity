@@ -46,7 +46,7 @@ public class HyperStringFSA2 {
 	 * 
 	 */
 	private void constructFSA(String[] s, Vector<String[]> outputs) {
-		Node root = new Node("", 0.0);
+		Node root = new Node("", 1.0);
 		root = generateNodes(s, root);
 		generateOutputs(root, outputs);
 	}
@@ -98,13 +98,13 @@ public class HyperStringFSA2 {
 	private Node generateNodes(String[] s, Node parent) {
 		String unCapWord = deCapitalizeWord(s[0]);
 		Node unCapNode = new Node(unCapWord + " ", parent.cost
-				+ getCost(parent, unCapWord));
+				* getCost(parent, unCapWord));
 		unCapNode.parent = parent;
 		generateTransitions(unCapNode);
 
 		String capWord = capitalizeWord(s[0]);
 		Node capNode = new Node(capWord + " ", parent.cost
-				+ getCost(parent, capWord));
+				* getCost(parent, capWord));
 		capNode.parent = parent;
 		generateTransitions(capNode);
 
@@ -143,9 +143,14 @@ public class HyperStringFSA2 {
 	}
 
 	private double getCost(Node parent, String word) {
-		String ngram = backTrack(parent, word, nGram.getNGramLength() - 2);
-		//System.err.println(Arrays.toString(ngram.split(" ")));
-		double cost = nGram.getCostOfNGram(ngram.split(" "));
+		String[] ngram = (backTrack(parent, word, nGram.getNGramLength() - 2)
+				.split(" "));
+		// System.err.println(Arrays.toString(ngram.split(" ")));
+		double cost = 1.0;
+		if (ngram.length > 1) {
+			cost = nGram.getCostOfNGram(ngram);
+		}
+		// System.err.println("Cost: " + cost);
 
 		return cost;
 	}
@@ -160,10 +165,10 @@ public class HyperStringFSA2 {
 			String emission = TRANSITIONS[i];
 			Node transNode = null;
 			if (emission.equals(EMPTY_PUNCT)) {
-				transNode = new Node(emission, parent.cost);
+				transNode = new Node(emission, parent.cost*0.5);
 			} else {
 				transNode = new Node(emission, parent.cost
-						+ getCost(parent, emission));
+						* getCost(parent, emission));
 			}
 			transNode.parent = parent;
 			parent.children.add(transNode);
@@ -195,7 +200,7 @@ public class HyperStringFSA2 {
 	}
 
 	public static void main(String... args) {
-		String[] words = { "mars", "scientists"};
+		String[] words = { "mars", "scientists" };
 		NGramWrapper ngw = new NGramWrapper(3);
 		ngw.readFile(new File("sentences.txt"));
 
