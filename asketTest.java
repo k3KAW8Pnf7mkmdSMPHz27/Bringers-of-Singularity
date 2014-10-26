@@ -175,12 +175,12 @@ public class asketTest {
 
         for(int i = startPos; i < words.length; i++) {
             int index = 1;
-            int emergencyBreak = 1; //To prevent repetition of the same word
+            int emergencyBreak = 3; //To prevent repetition of the same word
             while(index>0 && emergencyBreak>0) {
                 index = Integer.MAX_VALUE;
                 System.arraycopy(start, 1, start, 0, NGramLength - 1);
                 double maxValue = Double.NEGATIVE_INFINITY;
-                for (int j = 0; j < transitions.length; j++) {
+                for (int j = transitions.length-1; j >= 0; j--) {
                     if (transitions[j] != transitions[0]) {
                         start[start.length - 1] = transitions[j];
                     } else {
