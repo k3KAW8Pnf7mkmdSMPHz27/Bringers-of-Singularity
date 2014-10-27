@@ -75,7 +75,7 @@ public class NGramWrapper {
                 if(s.length>1) {
                     value = counts(s);
                     String argument[] = new String[s.length-1];
-                    System.arraycopy(s, 0, argument, 0, argument.length);
+                    System.arraycopy(s, 1, argument, 0, argument.length);
                     if(value>0) {
                         value /= counts(argument);
                     } else {
@@ -84,7 +84,7 @@ public class NGramWrapper {
                 } else {
                     double counts = counts(s);
                     if(counts==0) {
-                        counts=1;
+                        counts=0.1;
                     }
                     double total = ngram[0].numberOfGrams();
                     value = counts/total;
