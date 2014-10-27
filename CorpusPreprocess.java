@@ -29,7 +29,11 @@ public class CorpusPreprocess {
 		BufferedReader br;
 		BufferedWriter bw;
 		BufferedWriter bwT;
+		BufferedWriter bwTC;
+		
 		StringBuffer sb = new StringBuffer();
+		StringBuffer sbt = new StringBuffer();
+		
 		int nrLines=0;
 		int toLearn=Integer.parseInt(args[0]);
 		int toTest=Integer.parseInt(args[1]);
@@ -38,6 +42,7 @@ public class CorpusPreprocess {
 			br = new BufferedReader(new FileReader("corpus.txt"));
 			bw = new BufferedWriter(new FileWriter("ppCorpus.txt"));
 			bwT = new BufferedWriter(new FileWriter("testSentences.txt"));
+			bwTC = new BufferedWriter(new FileWriter("testScentencesCorrect.txt"));
 			String line;
 			char[] lc;
 			
@@ -70,46 +75,47 @@ public class CorpusPreprocess {
 				for(char c : lc){
 					if(c=='.'){
 						if(testing){
-							sb.append(" ");
+							sbt.append(" ");
 						}
-						else{
-							sb.append(" .PERIOD");
-						}
+					sb.append(" .PERIOD");
 					}
 					else if(c=='!'){
 						if(testing){
-							sb.append(" ");
+							sbt.append(" ");
 						}
-						else{
-							sb.append(" !EXCL");
-						}					}
+						sb.append(" !EXCL");
+					}
 					else if(c=='?'){
 						if(testing){
-							sb.append(" ");
+							sbt.append(" ");
 						}
-						else{
-							sb.append(" ?QMARK");
-						}
+						sb.append(" ?QMARK");
 					}
 					else if(c==','){
 						if(testing){
-							sb.append(" ");
+							sbt.append(" ");
+							
 						}
-						else{
-							sb.append(" ,COMMA");
-						}
+						sb.append(" ,COMMA");
 					}
 //					else if(c==' '){
 //						sb.append(' ');
 //					}
 					else{
+						if(testing){
+							sbt.append(c);
+						}
 						sb.append(c);
 					}
 				}
 				if(testing){
-					bwT.write(sb.toString());
-					sb = new StringBuffer();
+					bwT.write(sbt.toString());
+					sbt = new StringBuffer();
 					bwT.newLine();
+					
+					bwTC.write(sb.toString());
+					sb = new StringBuffer();
+					bwTC.newLine();
 				}
 				else{
 					bw.write(sb.toString());
