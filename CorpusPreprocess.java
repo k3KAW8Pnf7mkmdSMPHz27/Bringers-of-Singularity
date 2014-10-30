@@ -80,33 +80,33 @@ public class CorpusPreprocess {
                  */
                 lc = line.toCharArray();
                 if(testing)
-                    sbt.append(" START");
-                sb.append(" START");
+                    sbt.append(" START ");
+                sb.append(" START ");
                 for(char c : lc){
                     if(c=='.'){
                         if(testing){
                             sbt.append(" ");
                         }
-                        sb.append(" .PERIOD");
+                        sb.append(" .PERIOD ");
                     }
                     else if(c=='!'){
                         if(testing){
                             sbt.append(" ");
                         }
-                        sb.append(" !EXCL");
+                        sb.append(" !EXCL ");
                     }
                     else if(c=='?'){
                         if(testing){
                             sbt.append(" ");
                         }
-                        sb.append(" ?QMARK");
+                        sb.append(" ?QMARK ");
                     }
                     else if(c==','){
                         if(testing){
                             sbt.append(" ");
 
                         }
-                        sb.append(" ,COMMA");
+                        sb.append(" ,COMMA ");
                     }
                     else{
                         if(testing){
@@ -117,9 +117,9 @@ public class CorpusPreprocess {
                     }
                 }
                 if(testing) {
-                    sbt.append(" ¿EOL");
+                    sbt.append(" ¿EOL ");
                 }
-                sb.append(" ¿EOL");
+                sb.append(" ¿EOL ");
                 if(testing){
                     bufferedWriterTest.write(sbt.toString());
                     sbt = new StringBuffer();
