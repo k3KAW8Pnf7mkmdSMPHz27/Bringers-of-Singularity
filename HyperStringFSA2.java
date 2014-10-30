@@ -147,7 +147,7 @@ public class HyperStringFSA2 {
 				.split(" "));
 		// System.err.println(Arrays.toString(ngram.split(" ")));
 		double cost = 1.0;
-		if (ngram.length > 1) {
+		if (ngram.length > 1) { //Varför större än 1 istället för större än 0 ... ?
 			cost = nGram.getCostOfNGram(ngram);
 		}
 		// System.err.println("Cost: " + cost);
@@ -165,7 +165,7 @@ public class HyperStringFSA2 {
 			String emission = TRANSITIONS[i];
 			Node transNode = null;
 			if (emission.equals(EMPTY_PUNCT)) {
-				transNode = new Node(emission, parent.cost*0.5);
+				transNode = new Node(emission, parent.cost*0.5); //För att du vill ha en kostnad för att inte ha en punctuation ?
 			} else {
 				transNode = new Node(emission, parent.cost
 						* getCost(parent, emission));
