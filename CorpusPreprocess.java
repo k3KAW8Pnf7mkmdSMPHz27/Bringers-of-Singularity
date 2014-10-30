@@ -35,8 +35,8 @@ public class CorpusPreprocess {
         StringBuffer sbt = new StringBuffer();
 
         int nrLines=0;
-        int toLearn = Integer.MAX_VALUE;
-        int toTest = Integer.MAX_VALUE;
+        int toLearn = Integer.MAX_VALUE>>3;
+        int toTest = Integer.MAX_VALUE>>3;
         if(args.length==2) {
             toLearn = Integer.parseInt(args[0]);
             toTest = Integer.parseInt(args[1]);
