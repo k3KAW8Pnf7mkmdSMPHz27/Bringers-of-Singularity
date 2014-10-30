@@ -71,7 +71,7 @@ public class NGramWrapper {
     public double getCostOfNGram(String[] s, int smoothing) {
         double value = 0;
         switch (smoothing) {
-            case STUPID_BACKOFF:
+            case STUPID_BACKOFF: //From http://stackoverflow.com/questions/16383194/stupid-backoff-implementation-clarification
                 if(s.length>1) {
                     value = counts(s);
                     String argument[] = new String[s.length-1];
@@ -81,7 +81,7 @@ public class NGramWrapper {
                     } else {
                         value = STUPID_BACKOFF_ALPHA*getCostOfNGram(argument);
                     }
-                } else {
+                } else { //This is only "valid" because we will have a small corpus
                     double counts = counts(s);
                     if(counts==0) {
                         counts=0.1;
@@ -89,6 +89,9 @@ public class NGramWrapper {
                     double total = ngram[0].numberOfGrams();
                     value = counts/total;
                 }
+                break;
+            case JELINEK_MERCER: //From http://nlp.stanford.edu/~wcmac/papers/20050421-smoothing-tutorial.pdf
+
                 break;
             default:
                 throw new IllegalArgumentException();
