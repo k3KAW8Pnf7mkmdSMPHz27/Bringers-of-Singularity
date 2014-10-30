@@ -1,5 +1,7 @@
+corpus.txt
 ppCorpus.txt
 testSentences.txt
+testScentencesCorrect.txt
 
 *.class
 
