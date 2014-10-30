@@ -11,6 +11,8 @@ DD2380 project at KTH
 | ? | ?QMARK |
 | ! | !EXCL |
 | SPACE | none |
+| Start | START |
+| EOL | ¿EOL |
 
 ## Inherent assumptions
 - A word can only be terminated by (char)' ' and (char)'\n'.
