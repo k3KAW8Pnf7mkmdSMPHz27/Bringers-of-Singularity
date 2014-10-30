@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Arrays;
 
 /**
@@ -49,7 +46,7 @@ public class PunctuationPredicter {
 		String[] words = input.split(" ");
 
 		// Generate all possible punctuation combinations
-		HyperStringFSA2 hypString = new HyperStringFSA2(words, nGramWrapper);
+		HyperStringFSA3 hypString = new HyperStringFSA3(words, nGramWrapper);
 
 		// For each combination get it's count (last index)
 		String prediction = "";
@@ -87,14 +84,32 @@ public class PunctuationPredicter {
 
 	// Test
 	public static void main(String[] args) {
-		int nGramLength = 4;
+		int nGramLength = 3;
 		for (int i = 0; i < args.length; i += 2) {
 			if (args[i].equals("n-gram")) {
 				nGramLength = Integer.parseInt(args[i + 1]);
 			}
 		}
 		PunctuationPredicter pI = new PunctuationPredicter(nGramLength, "ppCorpus.txt");
-		System.out.println("Ready for prediction");
-		pI.handleInput(nGramLength);
+        String evaluate = "testSentences.txt";
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(evaluate));
+            int counter = 6;
+            while(counter>0) { //Risky?
+                long time = System.currentTimeMillis();
+                String fix = br.readLine().trim().replaceAll("( )+", " ");
+                System.err.println("---------------------");
+                System.err.println(fix);
+                System.out.println(pI.predictPunctuation(fix));
+                time = System.currentTimeMillis()-time;
+                time = time/1000;
+                System.err.println("Spent "+time+" s calculating sentence.");
+                counter--;
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+		//System.out.println("Ready for prediction");
+		//pI.handleInput(nGramLength);
 	}
 }
