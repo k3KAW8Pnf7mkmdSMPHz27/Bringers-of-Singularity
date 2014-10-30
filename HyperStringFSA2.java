@@ -11,8 +11,8 @@ import java.util.Vector;
  */
 public class HyperStringFSA2 {
 	public static final String EMPTY_PUNCT = "" + ((char) 007) + "EMPTY ";
-	public static final String[] TRANSITIONS = { EMPTY_PUNCT, ",COMMA ",
-			".PERIOD ", "?QMARK ", "!EXCL " };
+	//public static final String[] TRANSITIONS = { EMPTY_PUNCT, ",COMMA ", ".PERIOD ", "?QMARK ", "!EXCL " };
+    public static final String[] TRANSITIONS = { EMPTY_PUNCT, ",COMMA ", ".PERIOD "};
 	public static final String[] POSTPROCESSES = { " ", ", ", ". ", "? ", "! " };
 	public static final int TRANSITION_COUNT = TRANSITIONS.length;
 	public static final int STATES_COUNT = 2;
