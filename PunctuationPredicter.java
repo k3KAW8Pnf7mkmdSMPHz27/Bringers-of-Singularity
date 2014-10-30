@@ -97,7 +97,10 @@ public class PunctuationPredicter {
             int counter = 6;
             while(counter>0) { //Risky?
                 long time = System.currentTimeMillis();
-                String fix = br.readLine().trim().replaceAll("( )+", " ");
+                String fix = br.readLine();
+                System.err.println("----------------------");
+                System.err.println(fix);
+                fix = fix.trim().replaceAll("( )+", " ");
                 System.err.println("---------------------");
                 System.err.println(fix);
                 System.out.println(pI.predictPunctuation(fix));
