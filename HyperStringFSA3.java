@@ -326,6 +326,15 @@ public class HyperStringFSA3 {
             //System.err.println(length);
             return getCost2(parent.parent, ngram, length-1);
         } else {
+            /*
+            if(nGram.getNGramLength()>3) {
+                System.err.println("THIS WILL CRASH!");
+                throw new IllegalArgumentException();
+            }
+
+            return 1.0D;
+            This really should be 1.0D... right ?...
+            */
             return nGram.getCostOfNGram(Arrays.copyOfRange(ngram, length, ngram.length));
         }
     }
