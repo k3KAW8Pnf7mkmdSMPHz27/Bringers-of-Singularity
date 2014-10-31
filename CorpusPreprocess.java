@@ -93,20 +93,23 @@ public class CorpusPreprocess {
                         if(testing){
                             sbt.append(" ");
                         }
-                        sb.append(" !EXCL ");
+                        //sb.append(" !EXCL ");
+                        sb.append(" .PERIOD ");
                     }
                     else if(c=='?'){
                         if(testing){
                             sbt.append(" ");
                         }
-                        sb.append(" ?QMARK ");
+                        //sb.append(" ?QMARK ");
+                        sb.append(" .PERIOD ");
                     }
                     else if(c==','){
                         if(testing){
                             sbt.append(" ");
 
                         }
-                        sb.append(" ,COMMA ");
+                        //sb.append(" ,COMMA ");
+                        sb.append(" .PERIOD ");
                     }
                     else{
                         if(testing){

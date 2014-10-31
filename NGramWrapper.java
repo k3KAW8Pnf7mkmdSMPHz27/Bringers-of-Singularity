@@ -65,6 +65,11 @@ public class NGramWrapper {
         ngw.readFile(searchIn);
     }
 
+    /**
+     * Assumes that the N-Gram is correct size.
+     * @param s
+     * @return
+     */
     public double getCostOfNGram(String[] s) {
         return getCostOfNGram(s, this.smoothing);
     }

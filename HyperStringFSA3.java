@@ -12,8 +12,9 @@ import java.util.Vector;
  */
 public class HyperStringFSA3 {
     public static final String EMPTY_PUNCT = "" + ((char) 007) + "EMPTY ";
-    public static final String[] TRANSITIONS = { EMPTY_PUNCT, ",COMMA ", ".PERIOD ", "?QMARK ", "!EXCL " };
+    //public static final String[] TRANSITIONS = { EMPTY_PUNCT, ",COMMA ", ".PERIOD ", "?QMARK ", "!EXCL " };
     //public static final String[] TRANSITIONS = { EMPTY_PUNCT, ",COMMA ", ".PERIOD "};
+    public static final String[] TRANSITIONS = { EMPTY_PUNCT, ".PERIOD "};
     public static final String[] POSTPROCESSES = { " ", ", ", ". ", "? ", "! " };
     public static final int TRANSITION_COUNT = TRANSITIONS.length;
     //public static final int STATES_COUNT = 2;
@@ -75,12 +76,14 @@ public class HyperStringFSA3 {
         lowestValue = Integer.MAX_VALUE;
 
         */
-        time = System.currentTimeMillis();
+        //time = System.currentTimeMillis();
         startNode = new Node("START ", 1.0);
         //Node backTrackNode = usePriorityQueue(Arrays.copyOfRange(s, 1, s.length), startNode);
+
         usePriorityQueue(Arrays.copyOfRange(s, 1, s.length), startNode);
-        time = System.currentTimeMillis() - time;
-        System.err.println("Generated priority queue in "+time+" msec.");
+
+        //time = System.currentTimeMillis() - time;
+        //System.err.println("Generated priority queue in "+time+" msec.");
         /*
         StringBuilder test = new StringBuilder();
         Node node = findHighestValuedChild(root);
@@ -177,6 +180,12 @@ public class HyperStringFSA3 {
             System.out.println(sb.toString());
             return parent;
         }
+
+
+        if(s[0].equals(END_OF_LINE)) {
+            return parent;
+        }
+
 
         String unCapWord = deCapitalizeWord(s[0]);
         Node unCapNode = new Node(unCapWord + " ", parent.cost * getCost(parent, unCapWord));
@@ -287,8 +296,8 @@ public class HyperStringFSA3 {
             String emission = TRANSITIONS[i];
             Node transNode = null;
             if (emission.equals(EMPTY_PUNCT)) {
-                transNode = new Node(emission, parent.cost*0.5); //För att du vill ha en kostnad för att inte ha en punctuation ?
-
+                //transNode = new Node(emission, parent.cost*0.5); //För att du vill ha en kostnad för att inte ha en punctuation ?
+                transNode = new Node(emission, parent.cost);
             } else {
                 transNode = new Node(emission, parent.cost
                         * getCost(parent, emission));

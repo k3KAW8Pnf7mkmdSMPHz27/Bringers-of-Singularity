@@ -1,102 +1,117 @@
 import java.io.*;
 import java.util.Arrays;
+import java.util.Vector;
 
 /**
  * N-gram Punctuation Prediction. Requires a corpus with the punctuation symbols
  * tokenized as , --> ,COMMA . --> .PERIOD ? --> ?QMARK
- * 
+ *
  * @author joakimlilja
  *
  */
 public class PunctuationPredicter {
 
-	public static final String CORPUS_TEST_PATH = "ppSentenses.txt";
-	public static NGramWrapper nGramWrapper;
+    public static final String CORPUS_TEST_PATH = "ppSentenses.txt";
+    public static NGramWrapper nGramWrapper;
 
-	/**
-	 * Contructor
-	 * 
-	 * @param nGramLength
-	 *            - length of n-gram
-	 * @param corpusPath
-	 *            - path to corpus
-	 */
-	public PunctuationPredicter(int nGramLength, String corpusPath) {
-		nGramWrapper = new NGramWrapper(nGramLength);
-		if (!corpusPath.equals("")) {
-			nGramWrapper.readFile(new File(corpusPath));
-		} else {
-			nGramWrapper.readFile(new File(CORPUS_TEST_PATH));
-		}
-	}
+    /**
+     * Contructor
+     *
+     * @param nGramLength
+     *            - length of n-gram
+     * @param corpusPath
+     *            - path to corpus
+     */
+    public PunctuationPredicter(int nGramLength, String corpusPath) {
+        nGramWrapper = new NGramWrapper(nGramLength);
+        if (!corpusPath.equals("")) {
+            nGramWrapper.readFile(new File(corpusPath));
+        } else {
+            nGramWrapper.readFile(new File(CORPUS_TEST_PATH));
+        }
+    }
 
-	/**
-	 * Predicts the most likely sentence with punctuation symbols inserted given
-	 * the input
-	 * 
-	 * @param input
-	 *            - string from where the prediction is to be made
-	 * @return the predicted sentence
-	 */
-	public String predictPunctuation(String input) {
-		System.err
-				.println("-----------------------PREDICTION---------------------------");
+    /**
+     * Predicts the most likely sentence with punctuation symbols inserted given
+     * the input
+     *
+     * @param input
+     *            - string from where the prediction is to be made
+     * @return the predicted sentence
+     */
+    public String predictPunctuation(String input) {
+        System.err
+                .println("-----------------------PREDICTION---------------------------");
 
-		// Split into words
-		String[] words = input.split(" ");
+        // Split into words
+        String[] words = input.split(" ");
 
-		// Generate all possible punctuation combinations
-		HyperStringFSA3 hypString = new HyperStringFSA3(words, nGramWrapper);
+        // Generate all possible punctuation combinations
+        HyperStringFSA3 hypString = new HyperStringFSA3(words, nGramWrapper);
 
-		// For each combination get it's count (last index)
-		String prediction = "";
-		double maxCount = 0;
-		for (String[] s : hypString.getOutputs()) {
-			//System.err.println(Arrays.toString(s));
-			double count = Double.parseDouble(s[s.length - 1]);
+        // For each combination get it's count (last index)
+        String prediction = "";
+        double maxCount = 0;
+        for (String[] s : hypString.getOutputs()) {
+            //System.err.println(Arrays.toString(s));
+            double count = Double.parseDouble(s[s.length - 1]);
             //System.err.println(count);
-			if (count > maxCount) {
-				prediction = "";
-				maxCount = count;
-				for (String w : s) {
-					prediction += w + " ";
-				}
-			}
-		}
+            if (count > maxCount) {
+                prediction = "";
+                maxCount = count;
+                for (String w : s) {
+                    prediction += w + " ";
+                }
+            }
+        }
 
-		return prediction;
-	}
+        return prediction;
+    }
 
-	// Test method to run input from command line
-	private void handleInput(int nGramLength) {
-		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					System.in));
-			String input = br.readLine();
+    // Test method to run input from command line
+    private void handleInput(int nGramLength) {
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    System.in));
+            String input = br.readLine();
 
-			while (input != null) {
-				System.out.println(predictPunctuation(input));
-				input = br.readLine();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+            while (input != null) {
+                System.out.println(predictPunctuation(input));
+                input = br.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	// Test
-	public static void main(String[] args) {
-		int nGramLength = 3;
-		for (int i = 0; i < args.length; i += 2) {
-			if (args[i].equals("n-gram")) {
-				nGramLength = Integer.parseInt(args[i + 1]);
-			}
-		}
-		PunctuationPredicter pI = new PunctuationPredicter(nGramLength, "ppCorpus.txt");
+    private double getCostOfString(String word) {
+        String ngram[] = word.split(" ");
+        double value = 1.0D;
+        for(int i = ngram.length-1; i > nGramWrapper.getNGramLength()-1; i--) {
+            String[] argument = new String[nGramWrapper.getNGramLength()];
+            System.arraycopy(ngram, i-nGramWrapper.getNGramLength(), argument, 0, nGramWrapper.getNGramLength());
+            value *= nGramWrapper.getCostOfNGram(argument);
+        }
+        return value;
+
+    }
+
+    // Test
+    public static void main(String[] args) {
+        int nGramLength = 3;
+        for (int i = 0; i < args.length; i += 2) {
+            if (args[i].equals("n-gram")) {
+                nGramLength = Integer.parseInt(args[i + 1]);
+            }
+        }
+        PunctuationPredicter pI = new PunctuationPredicter(nGramLength, "ppCorpus.txt");
         String evaluate = "testSentences.txt";
         try {
             BufferedReader br = new BufferedReader(new FileReader(evaluate));
             int counter = Integer.MAX_VALUE;
+            //int counter = 3;
             while((counter>0)&&br.ready()) { //Risky?
+            //while(false) {
                 long time = System.currentTimeMillis();
                 String fix = br.readLine();
                 //System.err.println("---------------------");
@@ -111,10 +126,18 @@ public class PunctuationPredicter {
                 System.err.println("Spent "+time+" s calculating sentence.");
                 counter--;
             }
+            br.close();
+            /*
+            br = new BufferedReader(new FileReader("testdata.txt"));
+            while(br.ready()) {
+                String input = br.readLine();
+                System.err.println(input+"\t"+pI.getCostOfString(input));
+            }
+            */
         } catch(IOException e) {
             e.printStackTrace();
         }
-		//System.out.println("Ready for prediction");
-		//pI.handleInput(nGramLength);
-	}
+        //System.out.println("Ready for prediction");
+        //pI.handleInput(nGramLength);
+    }
 }
