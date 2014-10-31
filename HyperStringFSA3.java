@@ -181,17 +181,49 @@ public class HyperStringFSA3 {
             StringBuilder sb = new StringBuilder();
             backTrackFromChild(parent, sb);
             //System.out.println(sb.toString()+"\t"+parent.cost);
-            System.out.println(sb.toString());
+            System.out.println(sb.toString()+"\t"+parent.cost);
             return parent;
         }
 
+        String[] ngramHolder = new String[nGram.getNGramLength()];
+
         String unCapWord = deCapitalizeWord(s[0]);
-        Node unCapNode = new Node(unCapWord + " ", parent.cost * getCost(parent, unCapWord));
+
+        //Node unCapNode = new Node(unCapWord + " ", parent.cost * getCost(parent, unCapWord));
+        //System.err.println(backTrack(parent, unCapWord, nGram.getNGramLength() - 2)+"\t"+unCapNode.cost);
+        Node unCapNode = new Node(unCapWord+ " ");
         unCapNode.parent = parent;
+        unCapNode.cost = getCost2(unCapNode, ngramHolder, ngramHolder.length-1)*parent.cost;
+        /*
+        for(int i = 0; i < ngramHolder.length; i++) {
+            System.err.print(ngramHolder[i]+" ");
+        }
+        System.err.print("\t"+unCapNode.cost);
+        System.err.println();
+        */
 
         String capWord = capitalizeWord(s[0]);
-        Node capNode = new Node(capWord + " ", parent.cost * getCost(parent, capWord));
+        //Node capNode = new Node(capWord + " ", parent.cost * getCost(parent, capWord));
+
+        Node capNode = new Node(capWord+" ");
         capNode.parent = parent;
+        capNode.cost = getCost2(capNode, ngramHolder, ngramHolder.length-1)*parent.cost;
+
+
+        /*
+        double valueOfUnCap = unCapNode.cost;
+        double valueOfCap = capNode.cost;
+        String[] ngramHolder = new String[nGram.getNGramLength()];
+        double newUnCapValue = getCost2(unCapNode, ngramHolder, nGram.getNGramLength()-1)*parent.cost;
+        double newCapValue = getCost2(capNode, ngramHolder, nGram.getNGramLength()-1)*parent.cost;
+        if(valueOfCap!=newCapValue) {
+            System.err.println("WTH!");
+            System.err.println(valueOfCap);
+            System.err.println(newCapValue);
+        } else if(valueOfUnCap!=newUnCapValue) {
+            System.err.println("WTH!");
+        }
+        */
 
         generateTransitions(unCapNode);
         generateTransitions(capNode);
@@ -271,9 +303,39 @@ public class HyperStringFSA3 {
             return self.compareTo(pqe.self);
         }
     }
+    private double getCost2(Node parent, String[] ngram, int length) {
+        if(parent.value.equals(EMPTY_PUNCT)) {
+            return getCost2(parent.parent, ngram, length);
+        }
+        ngram[length] = parent.toString().trim();
+        /*
+        System.err.println(length);
+        for(int i = 0; i < ngram.length; i++) {
+            System.err.print(ngram[i]);
+        }
+        System.err.println();
+        */
+
+        if(length==0) {
+            /*
+            System.err.println(ngram);
+            System.err.println("OY!");
+            */
+            return nGram.getCostOfNGram(ngram);
+        } else if(parent.parent!=null) {
+            //System.err.println(length);
+            return getCost2(parent.parent, ngram, length-1);
+        } else {
+            return nGram.getCostOfNGram(Arrays.copyOfRange(ngram, length, ngram.length));
+        }
+    }
     private double getCost(Node parent, String word) {
         String[] ngram = (backTrack(parent, word, nGram.getNGramLength() - 2)
                 .split(" "));
+        for(int i = 0; i < ngram.length; i++) {
+            System.err.print(ngram[i]+" ");
+        }
+        System.err.println();
         // System.err.println(Arrays.toString(ngram.split(" ")));
         double cost = Double.NaN;
         if (ngram.length >= 0) { //Varför större än 1 istället för större än 0 ... ?
@@ -282,6 +344,7 @@ public class HyperStringFSA3 {
         // System.err.println("Cost: " + cost);
 
         return cost;
+
     }
     public String getOptimalString() {
         StringBuilder sb = new StringBuilder();
@@ -298,12 +361,15 @@ public class HyperStringFSA3 {
         for (int i = 0; i < TRANSITION_COUNT; i++) {
             String emission = TRANSITIONS[i];
             Node transNode = null;
+
             if (emission.equals(EMPTY_PUNCT)) {
                 //transNode = new Node(emission, parent.cost*0.5); //För att du vill ha en kostnad för att inte ha en punctuation ?
                 transNode = new Node(emission, parent.cost);
             } else {
-                transNode = new Node(emission, parent.cost
-                        * getCost(parent, emission));
+                //transNode = new Node(emission, parent.cost*getCost(parent, emission));
+                String[] ngram = new String[nGram.getNGramLength()];
+                transNode = new Node(emission);
+                transNode.cost = getCost2(transNode, ngram, ngram.length-1)*parent.cost;
             }
             transNode.parent = parent;
             parent.children.add(transNode);
@@ -352,6 +418,9 @@ public class HyperStringFSA3 {
         Node parent;
         Vector<Node> children;
 
+        public Node(String value) {
+            this(value, 0.0D);
+        }
         public Node(String value, double cost) {
             children = new Vector<Node>();
             this.cost = cost;
