@@ -54,6 +54,7 @@ public class PunctuationPredicter {
 		for (String[] s : hypString.getOutputs()) {
 			//System.err.println(Arrays.toString(s));
 			double count = Double.parseDouble(s[s.length - 1]);
+            //System.err.println(count);
 			if (count > maxCount) {
 				prediction = "";
 				maxCount = count;
@@ -94,16 +95,17 @@ public class PunctuationPredicter {
         String evaluate = "testSentences.txt";
         try {
             BufferedReader br = new BufferedReader(new FileReader(evaluate));
-            int counter = 6;
-            while(counter>0) { //Risky?
+            int counter = Integer.MAX_VALUE;
+            while((counter>0)&&br.ready()) { //Risky?
                 long time = System.currentTimeMillis();
                 String fix = br.readLine();
-                System.err.println("----------------------");
-                System.err.println(fix);
+                //System.err.println("---------------------");
+                //System.err.println(fix);
                 fix = fix.trim().replaceAll("( )+", " ");
                 System.err.println("---------------------");
                 System.err.println(fix);
-                System.out.println(pI.predictPunctuation(fix));
+                //System.out.println(pI.predictPunctuation(fix));
+                pI.predictPunctuation(fix);
                 time = System.currentTimeMillis()-time;
                 time = time/1000;
                 System.err.println("Spent "+time+" s calculating sentence.");
