@@ -28,6 +28,7 @@ public class HyperStringFSA3 {
     private double highestValue = Double.MIN_VALUE;
 
     private boolean optimalNotFound = true;
+    private Node optimalNode;
 
     /**
      * Constructor creating a FSA based on the specified String array consisting
@@ -95,7 +96,7 @@ public class HyperStringFSA3 {
 
     }
     private void usePriorityQueue(String[] s, Node startNode) {
-        PriorityQueue<PriorityQueueElement> pq = new PriorityQueue<>();
+        PriorityQueue<PriorityQueueElement> pq = new PriorityQueue<PriorityQueueElement>();
         pq.add(new PriorityQueueElement(s, startNode));
         System.err.println("Printing priority queue");
         //Node result = null;
@@ -104,7 +105,9 @@ public class HyperStringFSA3 {
             //result = generateNodes(pqe.s, pqe.self, pq);
             generateNodes(pqe.s, pqe.self, pq);
         }
+        pq.clear();
         //return result;
+
     }
     /**
      * Generate the outputs using a tree structure
@@ -174,6 +177,7 @@ public class HyperStringFSA3 {
     private Node generateNodes(String[] s, Node parent, PriorityQueue<PriorityQueueElement> pq) {
         if((pq!=null)&&(s==null)) {
             optimalNotFound=false;
+            optimalNode = parent;
             StringBuilder sb = new StringBuilder();
             backTrackFromChild(parent, sb);
             //System.out.println(sb.toString()+"\t"+parent.cost);
@@ -278,6 +282,11 @@ public class HyperStringFSA3 {
         // System.err.println("Cost: " + cost);
 
         return cost;
+    }
+    public String getOptimalString() {
+        StringBuilder sb = new StringBuilder();
+        backTrackFromChild(optimalNode, sb);
+        return sb.toString();
     }
 
     /**
