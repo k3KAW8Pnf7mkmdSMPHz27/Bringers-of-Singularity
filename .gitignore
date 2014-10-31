@@ -2,6 +2,7 @@ corpus.txt
 ppCorpus.txt
 testSentences.txt
 testScentencesCorrect.txt
+testdata.txt
 
 *.class
 
