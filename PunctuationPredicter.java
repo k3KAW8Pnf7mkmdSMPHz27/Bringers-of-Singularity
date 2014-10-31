@@ -107,12 +107,14 @@ public class PunctuationPredicter {
             }
         }
         PunctuationPredicter pI = new PunctuationPredicter(nGramLength, "ppCorpus.txt");
-        for(int i = 0; i < 20; i++) {
+        for(int i = 0; i < 3; i++) {
             String evaluate = "testSentences"+i+".txt";
             String answers = "testSentencesAnswers"+i+".txt";
             try {
-                BufferedReader br = new BufferedReader(new FileReader(evaluate));
-                PrintWriter pw = new PrintWriter(answers);
+                //BufferedReader br = new BufferedReader(new FileReader(evaluate));
+                BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(evaluate), "UTF-16BE"));
+                //PrintWriter pw = new PrintWriter(answers);
+                OutputStreamWriter pw = new OutputStreamWriter(new FileOutputStream(answers), "UTF-16BE");
                 int counter = Integer.MAX_VALUE;
                 //int counter = 3;
                 while ((counter > 0) && br.ready()) { //Risky?
@@ -128,7 +130,8 @@ public class PunctuationPredicter {
                         System.err.println(fix);
                         //System.out.println(pI.predictPunctuation(fix));
                         String answer = pI.predictPunctuation(fix);
-                        pw.println(answer);
+                        pw.write(answer);
+                        pw.write('\n');
                         //System.err.println(answer);
                         time = System.currentTimeMillis() - time;
                         time = time / 1000;
