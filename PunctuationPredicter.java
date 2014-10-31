@@ -50,6 +50,7 @@ public class PunctuationPredicter {
         HyperStringFSA3 hypString = new HyperStringFSA3(words, nGramWrapper);
 
         // For each combination get it's count (last index)
+        /*
         String prediction = "";
         double maxCount = 0;
         for (String[] s : hypString.getOutputs()) {
@@ -64,8 +65,9 @@ public class PunctuationPredicter {
                 }
             }
         }
+        */
 
-        return prediction;
+        return hypString.getOptimalString();
     }
 
     // Test method to run input from command line
@@ -105,28 +107,37 @@ public class PunctuationPredicter {
             }
         }
         PunctuationPredicter pI = new PunctuationPredicter(nGramLength, "ppCorpus.txt");
-        String evaluate = "testSentences.txt";
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(evaluate));
-            int counter = Integer.MAX_VALUE;
-            //int counter = 3;
-            while((counter>0)&&br.ready()) { //Risky?
-            //while(false) {
-                long time = System.currentTimeMillis();
-                String fix = br.readLine();
-                //System.err.println("---------------------");
-                //System.err.println(fix);
-                fix = fix.trim().replaceAll("( )+", " ");
-                System.err.println("---------------------");
-                System.err.println(fix);
-                //System.out.println(pI.predictPunctuation(fix));
-                pI.predictPunctuation(fix);
-                time = System.currentTimeMillis()-time;
-                time = time/1000;
-                System.err.println("Spent "+time+" s calculating sentence.");
-                counter--;
-            }
-            br.close();
+        for(int i = 0; i < 20; i++) {
+            String evaluate = "testSentences"+i+".txt";
+            String answers = "testSentencesAnswers"+i+".txt";
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(evaluate));
+                PrintWriter pw = new PrintWriter(answers);
+                int counter = Integer.MAX_VALUE;
+                //int counter = 3;
+                while ((counter > 0) && br.ready()) { //Risky?
+                    //while(false) {
+                    long time = System.currentTimeMillis();
+                    String fix = br.readLine();
+                    //System.err.println("---------------------");
+                    //System.err.println(fix);
+                    fix = fix.trim().replaceAll("( )+", " ");
+                    //if(fix.split(" ").length<9) {
+                    if (true) {
+                        System.err.println("-----------------------------------------------------");
+                        System.err.println(fix);
+                        //System.out.println(pI.predictPunctuation(fix));
+                        String answer = pI.predictPunctuation(fix);
+                        pw.println(answer);
+                        //System.err.println(answer);
+                        time = System.currentTimeMillis() - time;
+                        time = time / 1000;
+                        System.err.println("Spent " + time + " s calculating sentence.");
+                    }
+                    counter--;
+                }
+                br.close();
+                pw.close();
             /*
             br = new BufferedReader(new FileReader("testdata.txt"));
             while(br.ready()) {
@@ -134,8 +145,9 @@ public class PunctuationPredicter {
                 System.err.println(input+"\t"+pI.getCostOfString(input));
             }
             */
-        } catch(IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         //System.out.println("Ready for prediction");
         //pI.handleInput(nGramLength);
