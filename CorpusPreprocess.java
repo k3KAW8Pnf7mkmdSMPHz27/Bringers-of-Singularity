@@ -38,7 +38,9 @@ public class CorpusPreprocess {
         }
 
         try {
-            br = new BufferedReader(new FileReader("corpus.txt"));
+            //br = new BufferedReader(new FileReader("corpus.txt"));
+            //br = new BufferedReader(new InputStreamReader(new FileInputStream("corpus.txt"), "UTF-8"));
+            br = new BufferedReader(new InputStreamReader(new FileInputStream("corpus.txt")));
             bufferedWriterCorpus = new BufferedWriter(new FileWriter("ppCorpus.txt"));
             bufferedWriterTest = new BufferedWriter(new FileWriter("testSentences.txt"));
             bufferedWriterTestCorrection = new BufferedWriter(new FileWriter("testScentencesCorrect.txt"));
@@ -63,11 +65,13 @@ public class CorpusPreprocess {
             //Write the result to output file.
             int current = 0;
             boolean testing = false;
-            PrintWriter writeToTest[] = new PrintWriter[20];
-            PrintWriter writeToTestCorrection[] = new PrintWriter[20];
+            OutputStreamWriter writeToTest[] = new OutputStreamWriter[20];
+            OutputStreamWriter writeToTestCorrection[] = new OutputStreamWriter[20];
             for(int i = 0; i < writeToTest.length; i++) {
-                writeToTest[i] = new PrintWriter("testSentences"+i+".txt");
-                writeToTestCorrection[i] = new PrintWriter("testSentencesCorrection"+i+".txt");
+                writeToTest[i] = new OutputStreamWriter(new FileOutputStream("testSentences"+i+".txt"), "UTF-16BE");
+                writeToTestCorrection[i] = new OutputStreamWriter(new FileOutputStream("testSentencesCorrection"+i+".txt"), "UTF-16BE");
+                //writeToTest[i] = new OutputStreamWriter(new FileOutputStream("testSentences"+i+".txt"));
+                //writeToTestCorrection[i] = new OutputStreamWriter(new FileOutputStream("testSentencesCorrection"+i+".txt"));
             }
             while ((line=br.readLine()) != null) {
                 if(current==toLearn+1){
@@ -86,24 +90,24 @@ public class CorpusPreprocess {
                 lc = line.toCharArray();
                 if(testing) {
                     sbt.append(" START ");
-                    writeToTest[category].print(" START ");
-                    writeToTestCorrection[category].print(" START ");
+                    writeToTest[category].write(" START ");
+                    writeToTestCorrection[category].write(" START ");
                 }
                 sb.append(" START ");
                 for(char c : lc){
                     if(c=='.'){
                         if(testing){
                             sbt.append(" ");
-                            writeToTest[category].print(" ");
-                            writeToTestCorrection[category].print(" .PERIOD ");
+                            writeToTest[category].write(" ");
+                            writeToTestCorrection[category].write(" .PERIOD ");
                         }
                         sb.append(" .PERIOD ");
                     }
                     else if(c=='!'){
                         if(testing){
                             sbt.append(" ");
-                            writeToTest[category].print(" ");
-                            writeToTestCorrection[category].print(" .PERIOD ");
+                            writeToTest[category].write(" ");
+                            writeToTestCorrection[category].write(" .PERIOD ");
                         }
                         //sb.append(" !EXCL ");
                         sb.append(" .PERIOD ");
@@ -111,8 +115,8 @@ public class CorpusPreprocess {
                     else if(c=='?'){
                         if(testing){
                             sbt.append(" ");
-                            writeToTest[category].print(" ");
-                            writeToTestCorrection[category].print(" .PERIOD ");
+                            writeToTest[category].write(" ");
+                            writeToTestCorrection[category].write(" .PERIOD ");
                         }
                         //sb.append(" ?QMARK ");
                         sb.append(" .PERIOD ");
@@ -120,8 +124,8 @@ public class CorpusPreprocess {
                     else if(c==','){
                         if(testing){
                             sbt.append(" ");
-                            writeToTest[category].print(" ");
-                            writeToTestCorrection[category].print(" .PERIOD ");
+                            writeToTest[category].write(" ");
+                            writeToTestCorrection[category].write(" .PERIOD ");
                         }
                         //sb.append(" ,COMMA ");
                         sb.append(" .PERIOD ");
@@ -129,8 +133,8 @@ public class CorpusPreprocess {
                     else{
                         if(testing){
                             sbt.append(c);
-                            writeToTest[category].print(c);
-                            writeToTestCorrection[category].print(c);
+                            writeToTest[category].write(c);
+                            writeToTestCorrection[category].write(c);
 
                         }
                         sb.append(c);
@@ -138,10 +142,10 @@ public class CorpusPreprocess {
                 }
                 if(testing) {
                     sbt.append(" ¿EOL ");
-                    writeToTest[category].print(" ¿EOL ");
-                    writeToTestCorrection[category].print(" ¿EOL ");
-                    writeToTest[category].println();
-                    writeToTestCorrection[category].println();
+                    writeToTest[category].write(" ¿EOL ");
+                    writeToTestCorrection[category].write(" ¿EOL ");
+                    writeToTest[category].write('\n');
+                    writeToTestCorrection[category].write('\n');
                 }
                 sb.append(" ¿EOL");
                 if(testing){
@@ -164,6 +168,7 @@ public class CorpusPreprocess {
             br.close();
             bufferedWriterCorpus.close();
             bufferedWriterTest.close();
+            System.err.println("Using encoding: "+writeToTest[0].getEncoding());
             for(int k = 0; k < writeToTest.length; k++) {
                 writeToTest[k].close();
                 writeToTestCorrection[k].close();
