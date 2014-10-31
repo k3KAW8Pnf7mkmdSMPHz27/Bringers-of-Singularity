@@ -1,9 +1,4 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * This class loads the file corpus.txt, reads the file line by line up to the nr of lines provided in args[0].
@@ -68,6 +63,12 @@ public class CorpusPreprocess {
             //Write the result to output file.
             int current = 0;
             boolean testing = false;
+            PrintWriter writeToTest[] = new PrintWriter[20];
+            PrintWriter writeToTestCorrection[] = new PrintWriter[20];
+            for(int i = 0; i < writeToTest.length; i++) {
+                writeToTest[i] = new PrintWriter("testSentences"+i+".txt");
+                writeToTestCorrection[i] = new PrintWriter("testSentencesCorrection"+i+".txt");
+            }
             while ((line=br.readLine()) != null) {
                 if(current==toLearn+1){
                     testing=true;
@@ -78,20 +79,31 @@ public class CorpusPreprocess {
                 /*
                 Handling input on one line.
                  */
+                int category = line.trim().split("( )+").length; //Very inefficient =)
+                if(category>=writeToTest.length) {
+                    category=writeToTest.length-1;
+                }
                 lc = line.toCharArray();
-                if(testing)
+                if(testing) {
                     sbt.append(" START ");
+                    writeToTest[category].print(" START ");
+                    writeToTestCorrection[category].print(" START ");
+                }
                 sb.append(" START ");
                 for(char c : lc){
                     if(c=='.'){
                         if(testing){
                             sbt.append(" ");
+                            writeToTest[category].print(" ");
+                            writeToTestCorrection[category].print(" .PERIOD ");
                         }
                         sb.append(" .PERIOD ");
                     }
                     else if(c=='!'){
                         if(testing){
                             sbt.append(" ");
+                            writeToTest[category].print(" ");
+                            writeToTestCorrection[category].print(" .PERIOD ");
                         }
                         //sb.append(" !EXCL ");
                         sb.append(" .PERIOD ");
@@ -99,6 +111,8 @@ public class CorpusPreprocess {
                     else if(c=='?'){
                         if(testing){
                             sbt.append(" ");
+                            writeToTest[category].print(" ");
+                            writeToTestCorrection[category].print(" .PERIOD ");
                         }
                         //sb.append(" ?QMARK ");
                         sb.append(" .PERIOD ");
@@ -106,7 +120,8 @@ public class CorpusPreprocess {
                     else if(c==','){
                         if(testing){
                             sbt.append(" ");
-
+                            writeToTest[category].print(" ");
+                            writeToTestCorrection[category].print(" .PERIOD ");
                         }
                         //sb.append(" ,COMMA ");
                         sb.append(" .PERIOD ");
@@ -114,6 +129,8 @@ public class CorpusPreprocess {
                     else{
                         if(testing){
                             sbt.append(c);
+                            writeToTest[category].print(c);
+                            writeToTestCorrection[category].print(c);
 
                         }
                         sb.append(c);
@@ -121,6 +138,10 @@ public class CorpusPreprocess {
                 }
                 if(testing) {
                     sbt.append(" ¿EOL ");
+                    writeToTest[category].print(" ¿EOL ");
+                    writeToTestCorrection[category].print(" ¿EOL ");
+                    writeToTest[category].println();
+                    writeToTestCorrection[category].println();
                 }
                 sb.append(" ¿EOL");
                 if(testing){
@@ -143,6 +164,10 @@ public class CorpusPreprocess {
             br.close();
             bufferedWriterCorpus.close();
             bufferedWriterTest.close();
+            for(int k = 0; k < writeToTest.length; k++) {
+                writeToTest[k].close();
+                writeToTestCorrection[k].close();
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
