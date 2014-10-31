@@ -3,6 +3,7 @@ ppCorpus.txt
 testSentences.txt
 testScentencesCorrect.txt
 testdata.txt
+apache-opennlp-1.5.3/
 
 *.class
 
