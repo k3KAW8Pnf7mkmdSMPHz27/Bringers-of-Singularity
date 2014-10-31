@@ -87,117 +87,52 @@ public class Comparisons {
                 if(containsGenerated>=0) {
                     trueAndFalsePrecision++;
                     charTrueAndFalsePrecision[containsGenerated]++;
-                    //System.err.println(originalChar+" "+generatedChar);
                 }
+                //If a punctuation is detected in the original document
                 if(containsOriginal>=0) {
                     positiveRecall++;
                     charPositiveRecall[containsOriginal]++;
                 }
+                //If the punctuation is correct
                 if((originalChar==generatedChar)&&containsGenerated>=0) {
                     truePositivePrecision++;
                     charTruePositivePrecision[containsGenerated]++;
                 }
 
-                //System.err.println(generatedChar+" "+originalChar);
-
+                //If there is a punctuation in the original document but not the generated
                 if(containsOriginal>=0&&containsGenerated<0) {
-                    //System.err.println("A missed punctuation found");
                     originalChar = findNextChar(brOriginal);
-                } else if(containsGenerated>=0&&containsOriginal<0) {
-                    //System.err.println("An extra punctuation found");
+                }
+                //If there is a punctuation in the generated document but not the original
+                else if(containsGenerated>=0&&containsOriginal<0) {
                     generatedChar = findNextChar(brGenerated);
-                } else if(originalChar!=generatedChar) {
-                    //System.err.println("Different chars");
+                }
+                //If there is a difference between the chars (e.g. a space at the start of the line in one but not the other)
+                else if(originalChar!=generatedChar) {
                     generatedChar = findNextChar(brGenerated);
                     originalChar = findNextChar(brOriginal);
-                } else if(containsOriginal<0&&containsGenerated<0) {
-                    //System.err.println("No punctuations found");
-                    originalChar = findNextChar(brOriginal);
-                    generatedChar = findNextChar(brGenerated);
-                } else if(originalChar==generatedChar) {
-                    //System.err.println("They are both the same punctuation.");
+                }
+                //If neither of them is a punctuation
+                else if(containsOriginal<0&&containsGenerated<0) {
                     originalChar = findNextChar(brOriginal);
                     generatedChar = findNextChar(brGenerated);
                 }
+                //This should not happen
+                else if(originalChar==generatedChar) {
+                    originalChar = findNextChar(brOriginal);
+                    generatedChar = findNextChar(brGenerated);
+                }
+                //This should definitively not happen
                 else {
                     System.err.println("Else is run");
                     originalChar=brOriginal.read();
                     generatedChar=brGenerated.read();
                 }
-
-                /*
-                //If the generated punctuation is the correct one
-                if(originalChar==generatedChar&&containsGenerated>=0) {
-                    truePositivePrecision++;
-                    charTruePositivePrecision[containsGenerated]++;
-                    skipThisWord(brOriginal);
-                    skipThisWord(brGenerated);
-                }
-                //If there is a generated punctuation but it is the wrong one.
-                else if((containsGenerated>=0)&&(containsOriginal>=0)&&originalChar!=generatedChar) {
-                    skipThisWord(brOriginal);
-                    skipThisWord(brGenerated);
-                }
-                //If there is a generated punctuation but there shouldn't be one
-                else if((containsGenerated>=0)&&containsOriginal<0) {
-                    skipThisWord(brGenerated); //Skip the punctuation
-                    skipThisWord(brGenerated); //Skip the word that is looked up in original
-                    skipThisWord(brOriginal);
-                }
-                //If there should be a puntuation but there isn't
-                else if(containsOriginal>=0&&containsGenerated<0) {
-                    skipThisWord(brOriginal);
-                    skipThisWord(brOriginal);
-                    skipThisWord(brGenerated);
-                }
-                */
-
-                /*
-                if(containsGenerated>=0) {
-                    positivePrecision++;
-                    charPositivePrecision[containsGenerated]++;
-                    if (containsOriginal>=0) {
-
-                    }
-                    if (originalChar == punctuation[containsGenerated]) {
-                        truePositivePrecision++;
-                        charTruePositivePrecision[containsGenerated]++;
-
-                        //Positive recall needs to be increased since a real punctuation was encountered.
-                        positiveRecall++;
-                        charPositiveRecall[containsGenerated]++;
-                        skipThisWord(brOriginal);
-                        skipThisWord(brGenerated);
-                    } else {
-                        skipThisWord(brGenerated);
-                    }
-                    //} else if(originalChar==punctuation) {
-                    //} else if(contains(punctuation, originalChar)) {
-                } else if(containsOriginal>=0) { //If a punctuation were not detected in the generated document but there should be one.
-                    positiveRecall++;
-                    charPositiveRecall[containsOriginal]++;
-                    skipThisWord(brOriginal);
-                } else {
-                    skipThisWord(brOriginal);
-                    skipThisWord(brGenerated);
-                }
-                */
-
-
             }
             for(int i = 0; i < punctuation.length; i++) {
                 double precision = (double)charTruePositivePrecision[i]/(double)charTrueAndFalsePrecision[i];
                 double recall = (double)charTruePositivePrecision[i]/(double)charPositiveRecall[i];
                 FScore[i] = (2*precision*recall)/(precision+recall);
-                if(punctuation[i]=='.') {
-                    System.err.println("Score for punctuation " + punctuation[i]);
-                    System.err.println("Precision = " + precision);
-                    System.err.println("Recall = " + recall);
-                    System.err.println("TruePositivePrecision = " + charTruePositivePrecision[i]);
-                    System.err.println("TrueAndFalsePositivePrecision = "+charTrueAndFalsePrecision[i]);
-                    System.err.println("PositiveRecall = "+charPositiveRecall[i]);
-                }
-
             }
             double precision = (double)truePositivePrecision/(double)trueAndFalsePrecision;
             double recall = (double)truePositivePrecision/(double)positiveRecall;
