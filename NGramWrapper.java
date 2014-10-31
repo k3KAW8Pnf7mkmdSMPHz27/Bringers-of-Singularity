@@ -24,7 +24,7 @@ public class NGramWrapper {
     public final static int STUPID_BACKOFF = 0;
     public final static double STUPID_BACKOFF_ALPHA = 0.4; //Following http://stackoverflow.com/questions/16383194/stupid-backoff-implementation-clarification
     /*
-    From Stanley F. Chen and Joshua Goodman (1998), “An Empirical Study of Smoothing Techniques for Language Modeling”
+    From Stanley F. Chen and Joshua Goodman (1998), “An Empirical Study of Smoothing Techniques for Language Modeling"
      */
     public final static int MODIFIED_KNESER_NEY = 1;
     public final static int JELINEK_MERCER = 2;
