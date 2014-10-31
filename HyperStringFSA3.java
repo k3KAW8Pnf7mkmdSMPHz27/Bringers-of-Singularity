@@ -181,12 +181,6 @@ public class HyperStringFSA3 {
             return parent;
         }
 
-
-        if(s[0].equals(END_OF_LINE)) {
-            return parent;
-        }
-
-
         String unCapWord = deCapitalizeWord(s[0]);
         Node unCapNode = new Node(unCapWord + " ", parent.cost * getCost(parent, unCapWord));
         unCapNode.parent = parent;
