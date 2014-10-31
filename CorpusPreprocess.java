@@ -119,7 +119,7 @@ public class CorpusPreprocess {
                 if(testing) {
                     sbt.append(" ¿EOL ");
                 }
-                sb.append(" ¿EOL ");
+                sb.append(" ¿EOL");
                 if(testing){
                     bufferedWriterTest.write(sbt.toString());
                     sbt = new StringBuffer();
