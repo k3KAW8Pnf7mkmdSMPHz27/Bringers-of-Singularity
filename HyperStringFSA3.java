@@ -308,22 +308,10 @@ public class HyperStringFSA3 {
             return getCost2(parent.parent, ngram, length);
         }
         ngram[length] = parent.toString().trim();
-        /*
-        System.err.println(length);
-        for(int i = 0; i < ngram.length; i++) {
-            System.err.print(ngram[i]);
-        }
-        System.err.println();
-        */
 
         if(length==0) {
-            /*
-            System.err.println(ngram);
-            System.err.println("OY!");
-            */
             return nGram.getCostOfNGram(ngram);
         } else if(parent.parent!=null) {
-            //System.err.println(length);
             return getCost2(parent.parent, ngram, length-1);
         } else {
             /*
@@ -331,10 +319,11 @@ public class HyperStringFSA3 {
                 System.err.println("THIS WILL CRASH!");
                 throw new IllegalArgumentException();
             }
-
-            return 1.0D;
-            This really should be 1.0D... right ?...
             */
+
+            //return 1.0D;
+            //This really should be 1.0D... right ?...
+
             return nGram.getCostOfNGram(Arrays.copyOfRange(ngram, length, ngram.length));
         }
     }
@@ -371,7 +360,7 @@ public class HyperStringFSA3 {
             String emission = TRANSITIONS[i];
             Node transNode = null;
 
-            if (emission.equals(EMPTY_PUNCT)) {
+            if (emission.equals(EMPTY_PUNCT)) { //EMPTY_PUNCT should be replaced by null.
                 //transNode = new Node(emission, parent.cost*0.5); //För att du vill ha en kostnad för att inte ha en punctuation ?
                 transNode = new Node(emission, parent.cost);
             } else {
