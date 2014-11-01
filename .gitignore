@@ -151,3 +151,5 @@ correct_backoff0-5.zip
 wrong_backoff.zip
 smsCorpusAsText.txt
 UKWAC-1.xml
+
+OOV.txt

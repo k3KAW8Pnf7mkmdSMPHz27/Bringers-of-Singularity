@@ -181,7 +181,7 @@ public class HyperStringFSA3 {
             StringBuilder sb = new StringBuilder();
             backTrackFromChild(parent, sb);
             //System.out.println(sb.toString()+"\t"+parent.cost);
-            System.out.println(sb.toString()+"\t"+parent.cost);
+            System.err.println(sb.toString()+"\t"+parent.cost);
             return parent;
         }
 

@@ -46,6 +46,9 @@ public class NGramWrapper {
     //NGramModel ngram = new NGramModel();
     NGramModel ngram[];
 
+    long numberOfTokensInVocabulary = 0;
+    long numberOfTokensOutOfVocabulary = 0;
+
     public static void main(String[] args) {
         File searchIn = new File("corpus.txt");
         int nGramLength=3;
@@ -62,16 +65,39 @@ public class NGramWrapper {
         NGramWrapper ngw = new NGramWrapper(nGramLength);
         ngw.readFile(searchIn);
     }
-
+    public void resetOOV() {
+        numberOfTokensInVocabulary=0;
+        numberOfTokensOutOfVocabulary=0;
+    }
+    public double getOOV() {
+        if(numberOfTokensInVocabulary>0) {
+            return (double)numberOfTokensOutOfVocabulary/numberOfTokensInVocabulary;
+        } else {
+            return Double.NaN;
+        }
+    }
     /**
      * Assumes that the N-Gram is correct size.
      * @param s
      * @return
      */
     public double getCostOfNGram(String[] s) {
+
         return getCostOfNGram(s, this.smoothing);
     }
+    public void updateOOV(String[] s) {
+        for(int i = 0; i < s.length; i++) {
+            if(ngram[0].contains(new StringList(s[i]))) {
+                numberOfTokensInVocabulary++;
+            } else {
+                numberOfTokensOutOfVocabulary++;
+            }
+        }
+    }
     public double getCostOfNGram(String[] s, int smoothing) {
+        return getCostOfNGramRecursive(s, smoothing);
+    }
+    private double getCostOfNGramRecursive(String[] s, int smoothing) {
         double value = 0;
         switch (smoothing) {
             case STUPID_BACKOFF: //From http://stackoverflow.com/questions/16383194/stupid-backoff-implementation-clarification
@@ -82,7 +108,7 @@ public class NGramWrapper {
                     if(value>0) {
                         value /= counts(argument);
                     } else {
-                        value = STUPID_BACKOFF_ALPHA*getCostOfNGram(argument);
+                        value = STUPID_BACKOFF_ALPHA*getCostOfNGramRecursive(argument, STUPID_BACKOFF);
                     }
                 } else { //This is only "valid" because we will have a small corpus
                     double counts = counts(s);
@@ -99,7 +125,6 @@ public class NGramWrapper {
             default:
                 throw new IllegalArgumentException();
         }
-
         return value;
     }
     public NGramWrapper(int nGramLength) {

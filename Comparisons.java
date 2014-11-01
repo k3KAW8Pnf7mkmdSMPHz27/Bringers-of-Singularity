@@ -137,6 +137,8 @@ public class Comparisons {
             double precision = (double)truePositivePrecision/(double)trueAndFalsePrecision;
             double recall = (double)truePositivePrecision/(double)positiveRecall;
             FScore[FScore.length-1] = (2*precision*recall)/(precision + recall);
+            System.err.println("Overall precision = "+precision);
+            System.err.println("Overall recall = "+recall);
         } catch(IOException e) {
             e.printStackTrace();
         }
