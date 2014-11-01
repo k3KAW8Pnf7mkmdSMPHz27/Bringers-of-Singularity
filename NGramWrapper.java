@@ -152,7 +152,7 @@ public class NGramWrapper {
                 e.printStackTrace();
             }
             time = System.currentTimeMillis()-time;
-            System.err.println("Loaded in "+(time/1000/60/60)+ " min.");
+            System.err.println("Loaded in "+(time/1000/60)+ " min.");
         }
     }
     private void addNGrams(String string, int length, NGramModel ngm) {
