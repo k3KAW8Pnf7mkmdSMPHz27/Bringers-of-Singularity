@@ -55,10 +55,10 @@ public class HyperStringFSA3 {
      *
      */
     private void constructFSA(String[] s, Vector<String[]> outputs) {
-        Node root = new Node("", 1.0);
-        Node startNode = new Node("START ", 1.0);
-        root.children.add(startNode);
-        startNode.parent = root;
+        //Node root = new Node("", 1.0);
+        //Node startNode = new Node("START ", 1.0);
+        //root.children.add(startNode);
+        //startNode.parent = root;
         Long time = System.currentTimeMillis();
         //root = generateNodes(s, root);
         //It is a valid assumption that start of the line is START.
@@ -78,10 +78,13 @@ public class HyperStringFSA3 {
 
         */
         //time = System.currentTimeMillis();
-        startNode = new Node("START ", 1.0);
-        //Node backTrackNode = usePriorityQueue(Arrays.copyOfRange(s, 1, s.length), startNode);
 
+        /*
+        startNode = new Node("START ", 1.0);
         usePriorityQueue(Arrays.copyOfRange(s, 1, s.length), startNode);
+        */
+        Node startNode = new Node(EMPTY_PUNCT, 1.0);
+        usePriorityQueue(s, startNode);
 
         //time = System.currentTimeMillis() - time;
         //System.err.println("Generated priority queue in "+time+" msec.");
@@ -167,6 +170,20 @@ public class HyperStringFSA3 {
         }
 
     }
+    private double getCostOfString(String word) {
+        String ngram[] = word.split(" ");
+        double value = 1.0D;
+        for(int i = ngram.length-1; i >= nGram.getNGramLength(); i--) {
+            String[] argument = new String[nGram.getNGramLength()];
+            System.arraycopy(ngram, i-nGram.getNGramLength(), argument, 0, nGram.getNGramLength());
+            for(int j = 0; j < argument.length; j++) {
+                System.err.print(argument[j]+" ");
+            }
+            System.err.println();
+            value *= nGram.getCostOfNGram(argument);
+        }
+        return value;
+    }
     /**
      * Generate children
      *
@@ -230,6 +247,20 @@ public class HyperStringFSA3 {
 
         parent.children.add(capNode);
         parent.children.add(unCapNode);
+
+        /*
+        StringBuilder build = new StringBuilder();
+        backTrackFromChild(parent, build);
+        System.err.println("Printing from "+build.toString()+"\t"+parent.cost);
+        for(int i = 0; i < unCapNode.children.size(); i++) {
+            StringBuilder sb = new StringBuilder();
+            backTrackFromChild(unCapNode.children.get(i), sb);
+            System.err.println("\t\t" + sb.toString() + "\t" + unCapNode.children.get(i).cost);
+            sb =new StringBuilder();
+            backTrackFromChild(capNode.children.get(i), sb);
+            System.err.println("\t\t"+sb.toString()+"\t"+capNode.children.get(i).cost);
+        }
+        */
 
         //Ska för all del vara > 0....
         if (s.length > 1) { //Borde vara s.length < NGramLength right .... ? nope...
@@ -305,9 +336,13 @@ public class HyperStringFSA3 {
     }
     private double getCost2(Node parent, String[] ngram, int length) {
         if(parent.value.equals(EMPTY_PUNCT)) {
-            return getCost2(parent.parent, ngram, length);
+            if(parent.parent!=null) {
+                return getCost2(parent.parent, ngram, length);
+            } else {
+                return 1.0D;
+            }
         }
-        ngram[length] = parent.toString().trim();
+        ngram[length] = parent.value.trim();
 
         if(length==0) {
             return nGram.getCostOfNGram(ngram);
@@ -320,11 +355,10 @@ public class HyperStringFSA3 {
                 throw new IllegalArgumentException();
             }
             */
-
-            //return 1.0D;
+            return 1.0D;
             //This really should be 1.0D... right ?...
 
-            return nGram.getCostOfNGram(Arrays.copyOfRange(ngram, length, ngram.length));
+            //return nGram.getCostOfNGram(Arrays.copyOfRange(ngram, length, ngram.length-length));
         }
     }
     private double getCost(Node parent, String word) {
@@ -363,14 +397,17 @@ public class HyperStringFSA3 {
             if (emission.equals(EMPTY_PUNCT)) { //EMPTY_PUNCT should be replaced by null.
                 //transNode = new Node(emission, parent.cost*0.5); //För att du vill ha en kostnad för att inte ha en punctuation ?
                 transNode = new Node(emission, parent.cost);
+                transNode.parent = parent;
+                parent.children.add(transNode);
             } else {
                 //transNode = new Node(emission, parent.cost*getCost(parent, emission));
                 String[] ngram = new String[nGram.getNGramLength()];
                 transNode = new Node(emission);
+                transNode.parent = parent;
+                parent.children.add(transNode);
                 transNode.cost = getCost2(transNode, ngram, ngram.length-1)*parent.cost;
             }
-            transNode.parent = parent;
-            parent.children.add(transNode);
+
         }
 
     }

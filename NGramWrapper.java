@@ -7,10 +7,7 @@ import java.lang.ArrayIndexOutOfBoundsException;
 import java.lang.IllegalArgumentException;
 import java.lang.String;
 import java.lang.StringBuilder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.*;
 
 import opennlp.tools.ngram.NGramModel;
 import opennlp.tools.util.StringList;
@@ -20,7 +17,8 @@ public class NGramWrapper {
      * The Stupid Backoff currently assumes that if it has never seen a word before it is equivalent to having seen it once (i.e. very unlikely).
      */
     public final static int STUPID_BACKOFF = 0;
-    public final static double STUPID_BACKOFF_ALPHA = 0.4; //Following http://stackoverflow.com/questions/16383194/stupid-backoff-implementation-clarification
+    public final static double STUPID_BACKOFF_ALPHA = 0.001; //Following http://stackoverflow.com/questions/16383194/stupid-backoff-implementation-clarification
+    public final static double STUPID_BACKOFF_BASE = 0.7;
     /*
     From Stanley F. Chen and Joshua Goodman (1998), “An Empirical Study of Smoothing Techniques for Language Modeling"
      */
@@ -48,6 +46,8 @@ public class NGramWrapper {
 
     long numberOfTokensInVocabulary = 0;
     long numberOfTokensOutOfVocabulary = 0;
+    long numberOfNGramsInCoverage = 0;
+    long numberOfNGramsOutofCoverage = 0;
 
     public static void main(String[] args) {
         File searchIn = new File("corpus.txt");
@@ -82,7 +82,6 @@ public class NGramWrapper {
      * @return
      */
     public double getCostOfNGram(String[] s) {
-
         return getCostOfNGram(s, this.smoothing);
     }
     public void updateOOV(String[] s) {
@@ -92,6 +91,26 @@ public class NGramWrapper {
             } else {
                 numberOfTokensOutOfVocabulary++;
             }
+        }
+    }
+    public void resetCoverage() {
+        numberOfNGramsInCoverage=0;
+        numberOfNGramsOutofCoverage=0;
+    }
+    public void updateCoverage(String[] s) {
+        for(int i = s.length-1; i >= nGramLength; i--) {
+            if(ngram[ngram.length-1].contains(new StringList(Arrays.copyOfRange(s, i-nGramLength, i)))) {
+                numberOfNGramsInCoverage++;
+            } else {
+                numberOfNGramsOutofCoverage++;
+            }
+        }
+    }
+    public double getCoverage() {
+        if(numberOfNGramsInCoverage>0) {
+            return (double)numberOfNGramsOutofCoverage/numberOfNGramsInCoverage;
+        } else {
+            return Double.NaN;
         }
     }
     public double getCostOfNGram(String[] s, int smoothing) {
@@ -111,9 +130,12 @@ public class NGramWrapper {
                         value = STUPID_BACKOFF_ALPHA*getCostOfNGramRecursive(argument, STUPID_BACKOFF);
                     }
                 } else { //This is only "valid" because we will have a small corpus
-                    double counts = counts(s);
+                    double counts = STUPID_BACKOFF_BASE;
+                    if(s.length>0) {
+                        counts=counts(s);
+                    }
                     if(counts==0) {
-                        counts=0.1;
+                        counts=STUPID_BACKOFF_BASE;
                     }
                     double total = ngram[0].numberOfGrams();
                     value = counts/total;
@@ -162,6 +184,7 @@ public class NGramWrapper {
                 String newLine = br.readLine();
                 ngram[i] = new NGramModel();
                 while (newLine != null) {
+                    newLine = newLine.trim();
                     addNGrams(newLine, (i+1), ngram[i]);
                     numberOfSentences++;
                     newLine = br.readLine();
@@ -181,7 +204,7 @@ public class NGramWrapper {
         }
     }
     private void addNGrams(String string, int length, NGramModel ngm) {
-        String input[] = string.split(" ");
+        String input[] = string.split("( )+");
         numberOfTokens += input.length;
         for(int i = 0; i < input.length-length+1; i++) {
             String[] ngram = new String[length];

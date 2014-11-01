@@ -89,18 +89,17 @@ public class PunctuationPredicter {
     private double getCostOfString(String word) {
         String ngram[] = word.split(" ");
         double value = 1.0D;
-        for(int i = ngram.length-1; i > nGramWrapper.getNGramLength()-1; i--) {
+        for(int i = ngram.length; i >= nGramWrapper.getNGramLength(); i--) {
             String[] argument = new String[nGramWrapper.getNGramLength()];
             System.arraycopy(ngram, i-nGramWrapper.getNGramLength(), argument, 0, nGramWrapper.getNGramLength());
             value *= nGramWrapper.getCostOfNGram(argument);
         }
         return value;
-
     }
 
     // Test
     public static void main(String[] args) {
-        int nGramLength = 3;
+        int nGramLength = 4;
         for (int i = 0; i < args.length; i += 2) {
             if (args[i].equals("n-gram")) {
                 nGramLength = Integer.parseInt(args[i + 1]);
@@ -110,11 +109,14 @@ public class PunctuationPredicter {
         for(int i = 0; i < 6; i++) {
             String evaluate = "testSentences"+i+".txt";
             String answers = "testSentencesAnswers"+i+".txt";
+            String correct = "testSentencesCorrection"+i+".txt";
             try {
                 //BufferedReader br = new BufferedReader(new FileReader(evaluate));
                 BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(evaluate), "UTF-16BE"));
+                BufferedReader correction = new BufferedReader(new InputStreamReader(new FileInputStream(correct), "UTF-16BE"));
                 //PrintWriter pw = new PrintWriter(answers);
                 OutputStreamWriter pw = new OutputStreamWriter(new FileOutputStream(answers), "UTF-16BE");
+                PrintWriter printOOV = new PrintWriter("testSentencesAnswers"+i+"OOV.txt");
                 int counter = Integer.MAX_VALUE;
                 //int counter = 3;
                 while ((counter > 0) && br.ready()) { //Risky?
@@ -131,8 +133,12 @@ public class PunctuationPredicter {
                         //System.out.println(pI.predictPunctuation(fix));
                         String answer = pI.predictPunctuation(fix);
                         pI.nGramWrapper.updateOOV(fix.split(" "));
+                        pI.nGramWrapper.updateCoverage(fix.split(" "));
                         pw.write(answer);
                         pw.write('\n');
+                        String correctional = correction.readLine().trim().replaceAll("( )+", " ").replaceAll("(.PERIOD )+", ".PERIOD ");
+                        System.err.println(correctional+"\t"+pI.getCostOfString(correctional));
+                        System.err.println(answer+"\t"+pI.getCostOfString(answer));
                         //System.err.println(answer);
                         time = System.currentTimeMillis() - time;
                         time = time / 1000;
@@ -143,10 +149,18 @@ public class PunctuationPredicter {
                 System.out.println(pI.nGramWrapper.getOOV());
                 System.out.println("In vocabulary = "+pI.nGramWrapper.numberOfTokensInVocabulary);
                 System.out.println("Out of vocabulary = "+pI.nGramWrapper.numberOfTokensOutOfVocabulary);
+
+                System.out.println("Coverage = "+pI.nGramWrapper.getCoverage());
+                printOOV.println("In vocabulary = "+pI.nGramWrapper.numberOfTokensInVocabulary);
+                printOOV.println("Out of vocabulary = "+pI.nGramWrapper.numberOfTokensOutOfVocabulary);
+                //printOOV.println("Coverage = "+pI.nGramWrapper.getCoverage());
+                printOOV.println(pI.nGramWrapper.getOOV());
                 pI.nGramWrapper.resetOOV();
+                pI.nGramWrapper.resetCoverage();
 
                 br.close();
                 pw.close();
+                printOOV.close();
             /*
             br = new BufferedReader(new FileReader("testdata.txt"));
             while(br.ready()) {
