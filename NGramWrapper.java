@@ -131,6 +131,7 @@ public class NGramWrapper {
         System.err.println(f.getAbsolutePath());
         for(int i = 0; i < ngram.length; i++) {
             numberOfSentences = 0;
+            long time = System.currentTimeMillis();
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-16BE"));//new BufferedReader(new FileReader(f));
                 String newLine = br.readLine();
@@ -150,6 +151,8 @@ public class NGramWrapper {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            time = System.currentTimeMillis()-time;
+            System.err.println("Loaded in "+(time/1000/60/60)+ " min.");
         }
     }
     private void addNGrams(String string, int length, NGramModel ngm) {
