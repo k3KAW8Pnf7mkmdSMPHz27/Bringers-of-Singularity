@@ -107,7 +107,7 @@ public class PunctuationPredicter {
             }
         }
         PunctuationPredicter pI = new PunctuationPredicter(nGramLength, "ppCorpus.txt");
-        for(int i = 0; i < 10; i++) {
+        for(int i = 3; i < 10; i++) {
             String evaluate = "testSentences"+i+".txt";
             String answers = "testSentencesAnswers"+i+".txt";
             try {
