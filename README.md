@@ -3,6 +3,17 @@ Bringers-of-Singularity
 
 DD2380 project at KTH
 
+## Reduced conversion table
+| Symbol | Represented by |
+|---|---|
+| , | .PERIOD |
+| . | .PERIOD |
+| ? | .PERIOD |
+| ! | .PERIOD |
+| SPACE | none |
+| Start | START |
+| EOL | ¿EOL |
+
 ## Symbol conversion table
 | Symbol | Represented by |
 |---|---|
