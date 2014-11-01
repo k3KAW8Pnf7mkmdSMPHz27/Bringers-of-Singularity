@@ -2,9 +2,7 @@
 OpenNLP can be found at: https://opennlp.apache.org/cgi-bin/download.cgi
  */
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.ArrayIndexOutOfBoundsException;
 import java.lang.IllegalArgumentException;
 import java.lang.String;
@@ -13,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
-import java.io.File;
+
 import opennlp.tools.ngram.NGramModel;
 import opennlp.tools.util.StringList;
 
@@ -134,7 +132,7 @@ public class NGramWrapper {
         for(int i = 0; i < ngram.length; i++) {
             numberOfSentences = 0;
             try {
-                BufferedReader br = new BufferedReader(new FileReader(f));
+                BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-16BE"));//new BufferedReader(new FileReader(f));
                 String newLine = br.readLine();
                 ngram[i] = new NGramModel();
                 while (newLine != null) {

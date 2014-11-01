@@ -41,7 +41,8 @@ public class CorpusPreprocess {
             //br = new BufferedReader(new FileReader("corpus.txt"));
             //br = new BufferedReader(new InputStreamReader(new FileInputStream("corpus.txt"), "UTF-8"));
             br = new BufferedReader(new InputStreamReader(new FileInputStream("corpus.txt")));
-            bufferedWriterCorpus = new BufferedWriter(new FileWriter("ppCorpus.txt"));
+            //bufferedWriterCorpus = new BufferedWriter(new FileWriter("ppCorpus.txt"));
+            bufferedWriterCorpus = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("ppCorpus.txt"), "UTF-16BE"));
             bufferedWriterTest = new BufferedWriter(new FileWriter("testSentences.txt"));
             bufferedWriterTestCorrection = new BufferedWriter(new FileWriter("testScentencesCorrect.txt"));
             String line;
