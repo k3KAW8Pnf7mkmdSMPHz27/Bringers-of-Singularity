@@ -106,9 +106,9 @@ public class CorpusPreprocessUK {
                         for(int i = 0; i < index; i++) {
                             //System.err.println(buffer[i]);
                             bufferedWriterCorpus.write(buffer[i]);
-                            System.err.println(buffer[i]);
+                            //System.err.println(buffer[i]);
                         }
-                        System.err.println();
+                        //System.err.println();
                         bufferedWriterCorpus.append(" ¿EOL");
                         //bufferedWriterCorpus.newLine();
                         corpusSentences++;
