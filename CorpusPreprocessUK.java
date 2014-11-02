@@ -95,11 +95,9 @@ public class CorpusPreprocessUK {
 
                 if(really>0) {
                     length += really;
-                    System.err.println(length);
                 }
                 if(length<=10&&really>0) {
                     buffer[index]=line;
-                    System.err.println(line+"\t"+index);
                     index++;
                 } else if(previous>=3&&previous<=10&&length>10&&index>0) {
                     if(toLearn>corpusSentences) {
@@ -107,6 +105,9 @@ public class CorpusPreprocessUK {
                         for(int i = 0; i < index; i++) {
                             //System.err.println(buffer[i]);
                             bufferedWriterCorpus.write(buffer[i]);
+                            if(i+1<index) {
+                                bufferedWriterCorpus.write(' ');
+                            }
                             //System.err.println(buffer[i]);
                         }
                         //System.err.println();
@@ -119,6 +120,10 @@ public class CorpusPreprocessUK {
                         for(int i = 0; i < index; i++) {
                             writeToTestCorrection[0].write(buffer[i]);
                             writeToTest[0].write(buffer[i].replaceAll("( )*.PERIOD( )*", " "));
+                            if(i+1<index) {
+                                writeToTestCorrection[0].write(' ');
+                                writeToTest[0].write(' ');
+                            }
                         }
                         writeToTestCorrection[0].write(" ¿EOL");
                         writeToTestCorrection[0].write('\n');
