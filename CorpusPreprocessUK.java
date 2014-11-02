@@ -112,7 +112,7 @@ public class CorpusPreprocessUK {
                         }
                         //System.err.println();
                         bufferedWriterCorpus.append(" ¿EOL");
-                        //bufferedWriterCorpus.newLine();
+                        bufferedWriterCorpus.newLine();
                         corpusSentences++;
                     } else if(trainingSentences<toTest) {
                         writeToTestCorrection[0].write("START ");
