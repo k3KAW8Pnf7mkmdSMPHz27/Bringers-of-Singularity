@@ -40,8 +40,7 @@ public class PunctuationPredicter {
      * @return the predicted sentence
      */
     public String predictPunctuation(String input) {
-        System.err
-                .println("-----------------------PREDICTION---------------------------");
+        //System.err.println("-----------------------PREDICTION---------------------------");
 
         // Split into words
         String[] words = input.split(" ");
@@ -132,8 +131,8 @@ public class PunctuationPredicter {
                         fix = fix.trim().replaceAll("( )+", " ");
                         //if(fix.split(" ").length<9) {
                         if (true) {
-                            System.err.println("-----------------------------------------------------");
-                            System.err.println(fix);
+                            //System.err.println("-----------------------------------------------------");
+                            //System.err.println(fix);
                             //System.out.println(pI.predictPunctuation(fix));
                             String answer = pI.predictPunctuation(fix);
                             pI.nGramWrapper.updateOOV(fix.split(" "));
@@ -141,12 +140,12 @@ public class PunctuationPredicter {
                             pw.write(answer);
                             pw.write('\n');
                             String correctional = correction.readLine().trim().replaceAll("( )+", " ").replaceAll("(.PERIOD )+", ".PERIOD ");
-                            System.err.println(correctional + "\t" + pI.getCostOfString(correctional));
-                            System.err.println(answer + "\t" + pI.getCostOfString(answer));
+                            //System.err.println(correctional + "\t" + pI.getCostOfString(correctional));
+                            //System.err.println(answer + "\t" + pI.getCostOfString(answer));
                             //System.err.println(answer);
                             time = System.currentTimeMillis() - time;
                             time = time / 1000;
-                            System.err.println("Spent " + time + " s calculating sentence.");
+                            //System.err.println("Spent " + time + " s calculating sentence.");
                         }
                         counter--;
                     }

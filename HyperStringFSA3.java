@@ -101,7 +101,7 @@ public class HyperStringFSA3 {
     private void usePriorityQueue(String[] s, Node startNode) {
         PriorityQueue<PriorityQueueElement> pq = new PriorityQueue<PriorityQueueElement>();
         pq.add(new PriorityQueueElement(s, startNode));
-        System.err.println("Printing priority queue");
+        //System.err.println("Printing priority queue");
         //Node result = null;
         while(optimalNotFound&&(!pq.isEmpty())) {
             PriorityQueueElement pqe = pq.poll();
@@ -195,10 +195,10 @@ public class HyperStringFSA3 {
         if((pq!=null)&&(s==null)) {
             optimalNotFound=false;
             optimalNode = parent;
-            StringBuilder sb = new StringBuilder();
-            backTrackFromChild(parent, sb);
+            //StringBuilder sb = new StringBuilder();
+            //backTrackFromChild(parent, sb);
             //System.out.println(sb.toString()+"\t"+parent.cost);
-            System.err.println(sb.toString()+"\t"+parent.cost);
+            //System.err.println(sb.toString()+"\t"+parent.cost);
             return parent;
         }
 
