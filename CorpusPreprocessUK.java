@@ -90,7 +90,7 @@ public class CorpusPreprocessUK {
             while ((line=br.readLine()) != null) {
                 line = line.toLowerCase().replaceAll("[-,]", "").replaceAll("( )*[.!?]+( )*", " .PERIOD ").replaceAll("( )+", " ").replaceAll("(.PERIOD )+", ".PERIOD ").trim();
                 //System.err.println(line);
-                int really = line.split(" ").length;
+                int really = line.split("(( )+.PERIOD( )+)|( )+").length;
                 int previous = length;
 
                 if(really>0) {
