@@ -17,8 +17,8 @@ public class NGramWrapper {
      * The Stupid Backoff currently assumes that if it has never seen a word before it is equivalent to having seen it once (i.e. very unlikely).
      */
     public final static int STUPID_BACKOFF = 0;
-    public final static double STUPID_BACKOFF_ALPHA = 0.001; //Following http://stackoverflow.com/questions/16383194/stupid-backoff-implementation-clarification
-    public final static double STUPID_BACKOFF_BASE = 0.7;
+    public final static double STUPID_BACKOFF_ALPHA = 0.01; //Following http://stackoverflow.com/questions/16383194/stupid-backoff-implementation-clarification
+    public final static double STUPID_BACKOFF_BASE = 0.9;
     /*
     From Stanley F. Chen and Joshua Goodman (1998), “An Empirical Study of Smoothing Techniques for Language Modeling"
      */
