@@ -24,7 +24,7 @@ public class ukWacToTxt {
             		sb = new StringBuffer();
             	}
             	else if(temp.startsWith("</s>")){
-            		bw.write(sb.toString());
+            		bw.write(sb.toString().toLowerCase().trim());
                     bw.newLine();
             	}
             	else{

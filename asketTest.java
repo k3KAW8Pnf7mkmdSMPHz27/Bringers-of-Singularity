@@ -65,6 +65,19 @@ public class asketTest {
         handleInput(nGramLength);
         */
     }
+    
+    public static void removeMultiplePunctuations(File f) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-16BE"));
+        StringBuffer buff = new StringBuffer();
+        while(br.ready()) {
+            buff.append(br.readLine().replaceAll("( )+", " ").replaceAll("(\\.PERIOD )+", ".PERIOD "));
+            buff.append('\n');
+        }
+        br.close();
+        OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(f), "UTF-16BE");
+        osw.write(buff.toString());
+        osw.close();
+    }
     /**
      * The underlying assumption is that fakeHyperFSA()[0] is space and that space is the most common in-between in the corpus.
      * matrix[][][0] = the score

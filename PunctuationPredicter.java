@@ -66,8 +66,10 @@ public class PunctuationPredicter {
             }
         }
         */
+        String returnValue = hypString.getOptimalString();
+        hypString=null;
 
-        return hypString.getOptimalString();
+        return returnValue;
     }
 
     // Test method to run input from command line
@@ -105,62 +107,64 @@ public class PunctuationPredicter {
                 nGramLength = Integer.parseInt(args[i + 1]);
             }
         }
-        PunctuationPredicter pI = new PunctuationPredicter(nGramLength, "ppCorpus.txt");
-        for(int i = 0; i < 6; i++) {
-            String evaluate = "testSentences"+i+".txt";
-            String answers = "testSentencesAnswers"+i+".txt";
-            String correct = "testSentencesCorrection"+i+".txt";
-            try {
-                //BufferedReader br = new BufferedReader(new FileReader(evaluate));
-                BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(evaluate), "UTF-16BE"));
-                BufferedReader correction = new BufferedReader(new InputStreamReader(new FileInputStream(correct), "UTF-16BE"));
-                //PrintWriter pw = new PrintWriter(answers);
-                OutputStreamWriter pw = new OutputStreamWriter(new FileOutputStream(answers), "UTF-16BE");
-                PrintWriter printOOV = new PrintWriter("testSentencesAnswers"+i+"OOV.txt");
-                int counter = Integer.MAX_VALUE;
-                //int counter = 3;
-                while ((counter > 0) && br.ready()) { //Risky?
-                    //while(false) {
-                    long time = System.currentTimeMillis();
-                    String fix = br.readLine();
-                    //System.err.println("---------------------");
-                    //System.err.println(fix);
-                    fix = fix.trim().replaceAll("( )+", " ");
-                    //if(fix.split(" ").length<9) {
-                    if (true) {
-                        System.err.println("-----------------------------------------------------");
-                        System.err.println(fix);
-                        //System.out.println(pI.predictPunctuation(fix));
-                        String answer = pI.predictPunctuation(fix);
-                        pI.nGramWrapper.updateOOV(fix.split(" "));
-                        pI.nGramWrapper.updateCoverage(fix.split(" "));
-                        pw.write(answer);
-                        pw.write('\n');
-                        String correctional = correction.readLine().trim().replaceAll("( )+", " ").replaceAll("(.PERIOD )+", ".PERIOD ");
-                        System.err.println(correctional+"\t"+pI.getCostOfString(correctional));
-                        System.err.println(answer+"\t"+pI.getCostOfString(answer));
-                        //System.err.println(answer);
-                        time = System.currentTimeMillis() - time;
-                        time = time / 1000;
-                        System.err.println("Spent " + time + " s calculating sentence.");
+        for(int n = 3; n <= 7; n++) {
+            System.gc();
+            PunctuationPredicter pI = new PunctuationPredicter(n, "ppCorpus.txt");
+            for (int i = 0; i < 1; i++) {
+                String evaluate = "testSentences" + i +".txt";
+                String answers = "testSentencesAnswers" + i +"ngram"+n+ ".txt";
+                String correct = "testSentencesCorrection" + i +".txt";
+                try {
+                    //BufferedReader br = new BufferedReader(new FileReader(evaluate));
+                    BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(evaluate), "UTF-16BE"));
+                    BufferedReader correction = new BufferedReader(new InputStreamReader(new FileInputStream(correct), "UTF-16BE"));
+                    //PrintWriter pw = new PrintWriter(answers);
+                    OutputStreamWriter pw = new OutputStreamWriter(new FileOutputStream(answers), "UTF-16BE");
+                    PrintWriter printOOV = new PrintWriter("testSentencesAnswers" + i + "OOV.txt");
+                    int counter = Integer.MAX_VALUE;
+                    //int counter = 3;
+                    while ((counter > 0) && br.ready()) { //Risky?
+                        //while(false) {
+                        long time = System.currentTimeMillis();
+                        String fix = br.readLine();
+                        //System.err.println("---------------------");
+                        //System.err.println(fix);
+                        fix = fix.trim().replaceAll("( )+", " ");
+                        //if(fix.split(" ").length<9) {
+                        if (true) {
+                            System.err.println("-----------------------------------------------------");
+                            System.err.println(fix);
+                            //System.out.println(pI.predictPunctuation(fix));
+                            String answer = pI.predictPunctuation(fix);
+                            pI.nGramWrapper.updateOOV(fix.split(" "));
+                            pI.nGramWrapper.updateCoverage(fix.split(" "));
+                            pw.write(answer);
+                            pw.write('\n');
+                            String correctional = correction.readLine().trim().replaceAll("( )+", " ").replaceAll("(.PERIOD )+", ".PERIOD ");
+                            System.err.println(correctional + "\t" + pI.getCostOfString(correctional));
+                            System.err.println(answer + "\t" + pI.getCostOfString(answer));
+                            //System.err.println(answer);
+                            time = System.currentTimeMillis() - time;
+                            time = time / 1000;
+                            System.err.println("Spent " + time + " s calculating sentence.");
+                        }
+                        counter--;
                     }
-                    counter--;
-                }
-                System.out.println(pI.nGramWrapper.getOOV());
-                System.out.println("In vocabulary = "+pI.nGramWrapper.numberOfTokensInVocabulary);
-                System.out.println("Out of vocabulary = "+pI.nGramWrapper.numberOfTokensOutOfVocabulary);
+                    System.out.println(pI.nGramWrapper.getOOV());
+                    System.out.println("In vocabulary = " + pI.nGramWrapper.numberOfTokensInVocabulary);
+                    System.out.println("Out of vocabulary = " + pI.nGramWrapper.numberOfTokensOutOfVocabulary);
 
-                System.out.println("Coverage = "+pI.nGramWrapper.getCoverage());
-                printOOV.println("In vocabulary = "+pI.nGramWrapper.numberOfTokensInVocabulary);
-                printOOV.println("Out of vocabulary = "+pI.nGramWrapper.numberOfTokensOutOfVocabulary);
-                //printOOV.println("Coverage = "+pI.nGramWrapper.getCoverage());
-                printOOV.println(pI.nGramWrapper.getOOV());
-                pI.nGramWrapper.resetOOV();
-                pI.nGramWrapper.resetCoverage();
+                    System.out.println("Coverage = " + pI.nGramWrapper.getCoverage());
+                    printOOV.println("In vocabulary = " + pI.nGramWrapper.numberOfTokensInVocabulary);
+                    printOOV.println("Out of vocabulary = " + pI.nGramWrapper.numberOfTokensOutOfVocabulary);
+                    //printOOV.println("Coverage = "+pI.nGramWrapper.getCoverage());
+                    printOOV.println(pI.nGramWrapper.getOOV());
+                    pI.nGramWrapper.resetOOV();
+                    pI.nGramWrapper.resetCoverage();
 
-                br.close();
-                pw.close();
-                printOOV.close();
+                    br.close();
+                    pw.close();
+                    printOOV.close();
             /*
             br = new BufferedReader(new FileReader("testdata.txt"));
             while(br.ready()) {
@@ -168,8 +172,9 @@ public class PunctuationPredicter {
                 System.err.println(input+"\t"+pI.getCostOfString(input));
             }
             */
-            } catch (IOException e) {
-                e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         //System.out.println("Ready for prediction");

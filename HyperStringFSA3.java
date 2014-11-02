@@ -204,13 +204,19 @@ public class HyperStringFSA3 {
 
         String[] ngramHolder = new String[nGram.getNGramLength()];
 
-        String unCapWord = deCapitalizeWord(s[0]);
+
 
         //Node unCapNode = new Node(unCapWord + " ", parent.cost * getCost(parent, unCapWord));
         //System.err.println(backTrack(parent, unCapWord, nGram.getNGramLength() - 2)+"\t"+unCapNode.cost);
-        Node unCapNode = new Node(unCapWord+ " ");
+
+        //String unCapWord = deCapitalizeWord(s[0]);
+        //Node unCapNode = new Node(unCapWord+ " ");
+        //unCapNode.parent = parent;
+        //unCapNode.cost = getCost2(unCapNode, ngramHolder, ngramHolder.length-1)*parent.cost;
+        Node unCapNode = new Node(s[0]+" ");
         unCapNode.parent = parent;
         unCapNode.cost = getCost2(unCapNode, ngramHolder, ngramHolder.length-1)*parent.cost;
+
         /*
         for(int i = 0; i < ngramHolder.length; i++) {
             System.err.print(ngramHolder[i]+" ");
@@ -219,12 +225,11 @@ public class HyperStringFSA3 {
         System.err.println();
         */
 
-        String capWord = capitalizeWord(s[0]);
+        //String capWord = capitalizeWord(s[0]);
         //Node capNode = new Node(capWord + " ", parent.cost * getCost(parent, capWord));
-
-        Node capNode = new Node(capWord+" ");
-        capNode.parent = parent;
-        capNode.cost = getCost2(capNode, ngramHolder, ngramHolder.length-1)*parent.cost;
+        //Node capNode = new Node(capWord+" ");
+        //capNode.parent = parent;
+        //capNode.cost = getCost2(capNode, ngramHolder, ngramHolder.length-1)*parent.cost;
 
 
         /*
@@ -243,10 +248,11 @@ public class HyperStringFSA3 {
         */
 
         generateTransitions(unCapNode);
-        generateTransitions(capNode);
+        //generateTransitions(capNode);
 
-        parent.children.add(capNode);
         parent.children.add(unCapNode);
+        //parent.children.add(capNode);
+
 
         /*
         StringBuilder build = new StringBuilder();
@@ -267,17 +273,17 @@ public class HyperStringFSA3 {
             for (int i = 0; i < unCapNode.children.size(); i++) {
                 if (pq == null) {
                     unCapNode.children.set(i, generateNodes(Arrays.copyOfRange(s, 1, s.length), unCapNode.children.get(i), null));
-                    capNode.children.set(i, generateNodes(Arrays.copyOfRange(s, 1, s.length), capNode.children.get(i), null));
+                    //capNode.children.set(i, generateNodes(Arrays.copyOfRange(s, 1, s.length), capNode.children.get(i), null));
                 } else {
                     pq.offer(new PriorityQueueElement(Arrays.copyOfRange(s, 1, s.length), unCapNode.children.get(i)));
-                    pq.offer(new PriorityQueueElement(Arrays.copyOfRange(s, 1, s.length), capNode.children.get(i)));
+                    //pq.offer(new PriorityQueueElement(Arrays.copyOfRange(s, 1, s.length), capNode.children.get(i)));
                 }
             }
 
         } else if(pq!=null) {
             for (int i = 0; i < unCapNode.children.size(); i++) {
                 pq.offer(new PriorityQueueElement(null, unCapNode.children.get(i)));
-                pq.offer(new PriorityQueueElement(null, capNode.children.get(i)));
+                //pq.offer(new PriorityQueueElement(null, capNode.children.get(i)));
             }
         } else {
             for (int i = 0; i < unCapNode.children.size(); i++) {
@@ -292,6 +298,7 @@ public class HyperStringFSA3 {
                     lowestValue=unCapNodeCost;
                 }
             }
+            /*
             for (int i = 0; i < capNode.children.size(); i++) {
                 double nodeCost = capNode.children.get(i).cost;
                 if(nodeCost>highestValue) {
@@ -304,6 +311,7 @@ public class HyperStringFSA3 {
                     lowestValue=nodeCost;
                 }
             }
+            */
         }
 
         /*
