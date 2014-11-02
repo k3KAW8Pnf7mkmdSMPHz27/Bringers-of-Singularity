@@ -61,10 +61,16 @@ public class CorpusPreprocess {
 
             if((toLearn+toTest)>nrLines){
                 System.err.println("Request invalid: Number of lines requested > nr of lines available in corpus.\nThere are "+nrLines+" number of lines.");
+                System.err.println("toLearn = "+toLearn);
+                System.err.println("toTest = "+toTest);
                 return;
             }
 
-            Random r = new Random(0);
+            int seed = 0;
+            if(args.length>2) {
+                seed=Integer.parseInt(args[2]);
+            }
+            Random r = new Random(seed);
             int[] uniqueLinesToLearn = new int[toLearn];
             int[] uniqueLinesToTest = new int[toTest];
             for(int j = 0; j < uniqueLinesToLearn.length; j++) {
