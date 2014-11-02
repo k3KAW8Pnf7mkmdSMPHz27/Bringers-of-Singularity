@@ -88,12 +88,13 @@ public class CorpusPreprocessUK {
             int length = 0;
             String buffer[] = new String[10];
             while ((line=br.readLine()) != null) {
-                int really = line.split("( )+").length;
+                line = line.toLowerCase().replaceAll("[-,]", "").replaceAll("( )*[.!?]+( )*", " .PERIOD ").replaceAll("( )+", " ").replaceAll("(.PERIOD )+", ".PERIOD ");
+                int really = line.split(" ").length;
                 if(really>0) {
                     length+=really;
                 }
                 if(length<=10) {
-                    buffer[index]=line.toLowerCase().replaceAll("[-,]", "").replaceAll("( )*[.!?]+( )*", " .PERIOD ").replaceAll("( )+", " ").replaceAll("(.PERIOD )+", ".PERIOD ");
+                    buffer[index]=line;
                     index++;
                 } else if(length>=3) {
                     if(toLearn>corpusSentences) {
