@@ -98,7 +98,7 @@ public class CorpusPreprocessUK {
                 }
                 if(length<=10) {
                     buffer[index]=line;
-                    System.err.println(line);
+                    System.err.println(line+"\t"+index);
                     index++;
                 } else if(length>=3&&previous<=10) {
                     if(toLearn>corpusSentences) {
