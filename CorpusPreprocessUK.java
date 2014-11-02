@@ -92,7 +92,8 @@ public class CorpusPreprocessUK {
                 //System.err.println(line);
                 int really = line.split(" ").length;
                 int previous = length;
-                if(really>1) {
+
+                if(really>2) {
                     length+=really;
                     System.err.println(length);
                 }
