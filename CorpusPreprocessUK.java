@@ -101,7 +101,7 @@ public class CorpusPreprocessUK {
                     buffer[index]=line;
                     System.err.println(line+"\t"+index);
                     index++;
-                } else if(length>=3&&previous<=10) {
+                } else if(previous>=3&&previous<=10&&length>10&&index>0) {
                     if(toLearn>corpusSentences) {
                         bufferedWriterCorpus.write("START ");
                         for(int i = 0; i < index; i++) {
@@ -111,7 +111,7 @@ public class CorpusPreprocessUK {
                         }
                         //System.err.println();
                         bufferedWriterCorpus.append(" ¿EOL");
-                        //bufferedWriterCorpus.newLine();
+                        bufferedWriterCorpus.newLine();
                         corpusSentences++;
                     } else if(trainingSentences<toTest) {
                         writeToTestCorrection[0].write("START ");
