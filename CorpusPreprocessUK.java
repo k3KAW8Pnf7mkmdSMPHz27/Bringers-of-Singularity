@@ -128,6 +128,8 @@ public class CorpusPreprocessUK {
             bufferedWriterCorpus.close();
             //bufferedWriterTest.close();
             System.err.println("Using encoding: "+writeToTest[0].getEncoding());
+            System.err.println(corpusSentences+" sentences in corpus.");
+            System.err.println(trainingSentences+" sentences in training.");
             for(int k = 0; k < writeToTest.length; k++) {
                 writeToTest[k].close();
                 writeToTestCorrection[k].close();
