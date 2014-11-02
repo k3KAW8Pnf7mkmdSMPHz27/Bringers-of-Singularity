@@ -91,7 +91,7 @@ public class CorpusPreprocessUK {
                 line = line.toLowerCase().replaceAll("[-,]", "").replaceAll("( )*[.!?]+( )*", " .PERIOD ").replaceAll("( )+", " ").replaceAll("(.PERIOD )+", ".PERIOD ");
                 int really = line.split(" ").length;
                 int previous = length;
-                if(really>0) {
+                if(really>1) {
                     length+=really;
                 }
                 if(length<=10) {
