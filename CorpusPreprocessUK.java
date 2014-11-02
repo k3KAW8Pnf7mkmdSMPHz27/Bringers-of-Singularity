@@ -90,13 +90,14 @@ public class CorpusPreprocessUK {
             while ((line=br.readLine()) != null) {
                 line = line.toLowerCase().replaceAll("[-,]", "").replaceAll("( )*[.!?]+( )*", " .PERIOD ").replaceAll("( )+", " ").replaceAll("(.PERIOD )+", ".PERIOD ");
                 int really = line.split(" ").length;
+                int previous = length;
                 if(really>0) {
                     length+=really;
                 }
                 if(length<=10) {
                     buffer[index]=line;
                     index++;
-                } else if(length>=3) {
+                } else if(length>=3&&previous<=10) {
                     if(toLearn>corpusSentences) {
                         bufferedWriterCorpus.write("START ");
                         for(int i = 0; i < index; i++) {
