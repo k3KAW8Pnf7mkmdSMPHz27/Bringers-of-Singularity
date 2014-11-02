@@ -96,7 +96,7 @@ public class CorpusPreprocessUK {
                     if(toLearn>corpusSentences) {
                         bufferedWriterCorpus.write("START ");
                         for(int i = 0; i < index; i++) {
-                            bufferedWriterCorpus.write(buffer[index]);
+                            bufferedWriterCorpus.write(buffer[i]);
                         }
                         bufferedWriterCorpus.append(" ¿EOL");
                         bufferedWriterCorpus.newLine();
@@ -105,8 +105,8 @@ public class CorpusPreprocessUK {
                         writeToTestCorrection[0].write("START ");
                         writeToTest[0].write("START ");
                         for(int i = 0; i < index; i++) {
-                            writeToTestCorrection[0].write(buffer[index]);
-                            writeToTest[0].write(buffer[index].replaceAll(".PERIOD ", ""));
+                            writeToTestCorrection[0].write(buffer[i]);
+                            writeToTest[0].write(buffer[i].replaceAll(".PERIOD ", ""));
                         }
                         writeToTestCorrection[0].write(" ¿EOL");
                         writeToTestCorrection[0].write('\n');
