@@ -4,7 +4,7 @@ import java.io.File;
 public class PreprocessSMS {
     public static void main(String[] args) {
         smsCorpusToText.main(null);
-        CorpusPreprocess.main(new String[]{"50000", "1000", "1"});
+        CorpusPreprocess.main(new String[]{"50000", "1000", "0"});
 
         try {
             asketTest.removeMultiplePunctuations(new File("testSentences0.txt"));
