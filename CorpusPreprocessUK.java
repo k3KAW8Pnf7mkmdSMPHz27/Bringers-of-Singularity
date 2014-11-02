@@ -88,7 +88,10 @@ public class CorpusPreprocessUK {
             int length = 0;
             String buffer[] = new String[10];
             while ((line=br.readLine()) != null) {
-                length += line.split("( )+").length;
+                int really = line.split("( )+").length;
+                if(really>0) {
+                    length+=really;
+                }
                 if(length<=10) {
                     buffer[index]=line.toLowerCase().replaceAll("[-,]", "").replaceAll("( )*[.!?]+( )*", " .PERIOD ").replaceAll("( )+", " ").replaceAll("(.PERIOD )+", ".PERIOD ");
                     index++;
@@ -98,9 +101,11 @@ public class CorpusPreprocessUK {
                         for(int i = 0; i < index; i++) {
                             //System.err.println(buffer[i]);
                             bufferedWriterCorpus.write(buffer[i]);
+                            System.err.println(buffer[i]);
                         }
+                        System.err.println();
                         bufferedWriterCorpus.append(" ¿EOL");
-                        bufferedWriterCorpus.newLine();
+                        //bufferedWriterCorpus.newLine();
                         corpusSentences++;
                     } else if(trainingSentences<toTest) {
                         writeToTestCorrection[0].write("START ");
