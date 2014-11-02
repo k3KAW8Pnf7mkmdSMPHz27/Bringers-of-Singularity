@@ -96,7 +96,7 @@ public class CorpusPreprocessUK {
                     if(toLearn>corpusSentences) {
                         bufferedWriterCorpus.write("START ");
                         for(int i = 0; i < index; i++) {
-                            System.err.println(buffer[i]);
+                            //System.err.println(buffer[i]);
                             bufferedWriterCorpus.write(buffer[i]);
                         }
                         bufferedWriterCorpus.append(" ¿EOL");
