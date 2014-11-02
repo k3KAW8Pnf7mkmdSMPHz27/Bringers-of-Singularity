@@ -90,7 +90,7 @@ public class CorpusPreprocessUK {
             while ((line=br.readLine()) != null) {
                 length += line.split("( )+").length;
                 if(length<=10) {
-                    buffer[index]=line.toLowerCase().replaceAll("( )*[.!?]+( )*", " .PERIOD ").replaceAll("( )+", " ");
+                    buffer[index]=line.toLowerCase().replaceAll("[-,]", "").replaceAll("( )*[.!?]+( )*", " .PERIOD ").replaceAll("( )+", " ");
                     index++;
                 } else if(length>=3) {
                     if(toLearn>corpusSentences) {
