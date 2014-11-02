@@ -157,13 +157,13 @@ public class CorpusPreprocess {
                         if (category >= writeToTest.length) {
                             category = writeToTest.length - 1;
                         }
-                        lc = line.toLowerCase().toCharArray();
+                        lc = line.toLowerCase().trim().toCharArray();
                         if (testing) {
-                            sbt.append(" START ");
-                            writeToTest[category].write(" START ");
-                            writeToTestCorrection[category].write(" START ");
+                            sbt.append("START ");
+                            writeToTest[category].write("START ");
+                            writeToTestCorrection[category].write("START ");
                         }
-                        sb.append(" START ");
+                        sb.append("START ");
                         for (char c : lc) {
                             if (c == '.') {
                                 if (testing) {
@@ -189,8 +189,9 @@ public class CorpusPreprocess {
                                 //sb.append(" ?QMARK ");
                                 sb.append(" .PERIOD ");
                             }
-                        /*
+
                         else if(c==','){
+                                /*
                             if(testing){
                                 sbt.append(" ");
                                 writeToTest[category].write(" ");
@@ -198,8 +199,9 @@ public class CorpusPreprocess {
                             }
                             //sb.append(" ,COMMA ");
                             sb.append(" .PERIOD ");
+                            */
                         }
-                        */
+
                             else {
                                 if (testing) {
                                     sbt.append(c);
@@ -211,9 +213,9 @@ public class CorpusPreprocess {
                             }
                         }
                         if (testing) {
-                            sbt.append(" ¿EOL ");
-                            writeToTest[category].write(" ¿EOL ");
-                            writeToTestCorrection[category].write(" ¿EOL ");
+                            sbt.append(" ¿EOL");
+                            writeToTest[category].write(" ¿EOL");
+                            writeToTestCorrection[category].write(" ¿EOL");
                             writeToTest[category].write('\n');
                             writeToTestCorrection[category].write('\n');
                         }
