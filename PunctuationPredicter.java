@@ -122,6 +122,7 @@ public class PunctuationPredicter {
                     PrintWriter printOOV = new PrintWriter("testSentencesAnswers" + i + "OOV.txt");
                     int counter = Integer.MAX_VALUE;
                     //int counter = 3;
+                    int counting = 1;
                     while ((counter > 0) && br.ready()) { //Risky?
                         //while(false) {
                         long time = System.currentTimeMillis();
@@ -145,6 +146,8 @@ public class PunctuationPredicter {
                             //System.err.println(answer);
                             time = System.currentTimeMillis() - time;
                             time = time / 1000;
+                            System.err.println(counting);
+                            counting++;
                             //System.err.println("Spent " + time + " s calculating sentence.");
                         }
                         counter--;
