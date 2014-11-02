@@ -93,11 +93,11 @@ public class CorpusPreprocessUK {
                 int really = line.split(" ").length;
                 int previous = length;
 
-                if(really>2) {
-                    length+=really;
+                if(really>0) {
+                    length += really;
                     System.err.println(length);
                 }
-                if(length<=10) {
+                if(length<=10&&really>0) {
                     buffer[index]=line;
                     System.err.println(line+"\t"+index);
                     index++;
