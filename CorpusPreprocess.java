@@ -114,8 +114,8 @@ public class CorpusPreprocess {
             }
             Arrays.sort(uniqueLinesToLearn);
             Arrays.sort(uniqueLinesToTest);
-            System.out.println(uniqueLinesToLearn.length);
-            System.out.println(uniqueLinesToTest.length);
+            //System.out.println(uniqueLinesToLearn.length);
+            //System.out.println(uniqueLinesToTest.length);
 
             br=new BufferedReader(new FileReader("corpus.txt"));
 
@@ -132,6 +132,22 @@ public class CorpusPreprocess {
                 //writeToTest[i] = new OutputStreamWriter(new FileOutputStream("testSentences"+i+".txt"));
                 //writeToTestCorrection[i] = new OutputStreamWriter(new FileOutputStream("testSentencesCorrection"+i+".txt"));
             }
+            /*
+            String[] temp = new String[10];
+            int index = 0;
+            int length = 0;
+            while ((line=br.readLine())!=null) {
+                length += line.split(" ").length;
+                if(length<=10) {
+                    temp[index]=line;
+                    index++;
+                } else if(length>=3) {
+
+                }
+
+                current++;
+            }
+            */
             while ((line=br.readLine()) != null) {
                 /*
                 if(current==toLearn+1){

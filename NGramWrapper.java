@@ -17,8 +17,8 @@ public class NGramWrapper {
      * The Stupid Backoff currently assumes that if it has never seen a word before it is equivalent to having seen it once (i.e. very unlikely).
      */
     public final static int STUPID_BACKOFF = 0;
-    public final static double STUPID_BACKOFF_ALPHA = 0.4; //Following http://stackoverflow.com/questions/16383194/stupid-backoff-implementation-clarification
-    public final static double STUPID_BACKOFF_BASE = 0.1;
+    public final static double STUPID_BACKOFF_ALPHA = 0.01; //Following http://stackoverflow.com/questions/16383194/stupid-backoff-implementation-clarification
+    public static double STUPID_BACKOFF_BASE = 0.0001;
     /*
     From Stanley F. Chen and Joshua Goodman (1998), “An Empirical Study of Smoothing Techniques for Language Modeling"
      */
@@ -202,6 +202,7 @@ public class NGramWrapper {
             time = System.currentTimeMillis()-time;
             System.err.println("Loaded in "+(time/1000/60)+ " min.");
         }
+        STUPID_BACKOFF_BASE = 1D/ngram[0].numberOfGrams();
     }
     private void addNGrams(String string, int length, NGramModel ngm) {
         String input[] = string.split("( )+");
