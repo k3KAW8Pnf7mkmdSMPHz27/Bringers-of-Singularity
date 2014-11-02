@@ -140,7 +140,7 @@ public class PunctuationPredicter {
                             pI.nGramWrapper.updateCoverage(fix.split(" "));
                             pw.write(answer);
                             pw.write('\n');
-                            String correctional = correction.readLine().trim().replaceAll("( )+", " ").replaceAll("(.PERIOD )+", ".PERIOD ");
+                            //String correctional = correction.readLine().trim().replaceAll("( )+", " ").replaceAll("(.PERIOD )+", ".PERIOD ");
                             //System.err.println(correctional + "\t" + pI.getCostOfString(correctional));
                             //System.err.println(answer + "\t" + pI.getCostOfString(answer));
                             //System.err.println(answer);
