@@ -90,12 +90,13 @@ public class CorpusPreprocessUK {
             while ((line=br.readLine()) != null) {
                 length += line.split(" ").length;
                 if(length<=10) {
-                    buffer[index]=line.toLowerCase().replaceAll("[.!?]+", " .PERIOD ").replaceAll("( )+", " ");
+                    buffer[index]=line.toLowerCase().replaceAll("( )*[.!?]+( )*", " .PERIOD ").replaceAll("( )+", " ");
                     index++;
                 } else if(length>=3) {
                     if(toLearn>corpusSentences) {
                         bufferedWriterCorpus.write("START ");
                         for(int i = 0; i < index; i++) {
+                            System.err.println(buffer[i]);
                             bufferedWriterCorpus.write(buffer[i]);
                         }
                         bufferedWriterCorpus.append(" ¿EOL");
@@ -106,7 +107,7 @@ public class CorpusPreprocessUK {
                         writeToTest[0].write("START ");
                         for(int i = 0; i < index; i++) {
                             writeToTestCorrection[0].write(buffer[i]);
-                            writeToTest[0].write(buffer[i].replaceAll(".PERIOD ", ""));
+                            writeToTest[0].write(buffer[i].replaceAll("( )*.PERIOD( )*", " "));
                         }
                         writeToTestCorrection[0].write(" ¿EOL");
                         writeToTestCorrection[0].write('\n');
